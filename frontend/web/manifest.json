@@ -1,0 +1,36 @@
+{
+    "name": "Job Application Tracker",
+    "short_name": "JobTracker",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#0F0F23",
+    "theme_color": "#6C63FF",
+    "description": "AI-powered cross-platform job application tracker. Track your career journey with smart job extraction.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "categories": ["productivity", "business"],
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
