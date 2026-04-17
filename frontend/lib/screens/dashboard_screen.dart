@@ -10,6 +10,7 @@ import 'login_screen.dart';
 import 'add_job_screen.dart';
 import 'job_detail_screen.dart';
 import 'ai_extract_screen.dart';
+import '../widgets/ad_banner.dart';
 
 /// Dashboard screen showing analytics and job list.
 class DashboardScreen extends StatefulWidget {
@@ -294,6 +295,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: const AdBannerWidget(),
     );
   }
 
