@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = "your-openai-api-key"
     LLM_BASE_URL: str = "https://api.openai.com/v1"
     LLM_MODEL: str = "gpt-3.5-turbo"
+    GEMINI_API_KEY: str = ""
 
     # Firebase Configuration
     FIREBASE_CREDENTIALS_PATH: str = "serviceAccountKey.json"

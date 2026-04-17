@@ -12,7 +12,7 @@ from app.middleware.auth_middleware import get_current_user
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 
 
-@router.post("/", response_model=JobResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=JobResponse, status_code=status.HTTP_201_CREATED)
 async def create_new_job(
     job: JobCreate,
     current_user: dict = Depends(get_current_user),
@@ -31,7 +31,7 @@ async def create_new_job(
         )
 
 
-@router.get("/", response_model=list[JobResponse])
+@router.get("", response_model=list[JobResponse])
 async def list_jobs(
     status_filter: str | None = Query(None, alias="status", description="Filter by status"),
     company: str | None = Query(None, description="Search by company name"),

@@ -37,21 +37,28 @@ def get_firestore_client():
 # ==================== AUTH OPERATIONS ====================
 
 def create_user(email: str, password: str) -> dict:
-    """Create a new user in Firebase Auth."""
-    get_firebase_app()
-    try:
-        user = auth.create_user(email=email, password=password)
-        # Generate a custom token for the user
-        custom_token = auth.create_custom_token(user.uid)
-        return {
-            "uid": user.uid,
-            "email": user.email,
-            "token": custom_token.decode("utf-8") if isinstance(custom_token, bytes) else custom_token,
-        }
-    except auth.EmailAlreadyExistsError:
-        raise ValueError("Email already registered")
-    except Exception as e:
-        raise ValueError(f"Failed to create user: {str(e)}")
+    """Create a new user using Firebase Auth REST API."""
+    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={settings.FIREBASE_API_KEY}"
+    payload = {
+        "email": email,
+        "password": password,
+        "returnSecureToken": True,
+    }
+    response = requests.post(url, json=payload)
+
+    if response.status_code != 200:
+        error_data = response.json()
+        error_message = error_data.get("error", {}).get("message", "Registration failed")
+        if error_message == "EMAIL_EXISTS":
+            raise ValueError("Email already registered")
+        raise ValueError(f"Failed to create user: {error_message}")
+
+    data = response.json()
+    return {
+        "uid": data["localId"],
+        "email": data.get("email", email),
+        "token": data["idToken"],
+    }
 
 
 def verify_password(email: str, password: str) -> dict:

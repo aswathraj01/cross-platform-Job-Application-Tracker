@@ -1,6 +1,6 @@
 import json
 import re
-from openai import OpenAI
+# Removed openai import
 from app.config import get_settings
 
 settings = get_settings()
@@ -29,44 +29,35 @@ JOB DESCRIPTION:
 {content}
 \"\"\""""
 
-
-def get_llm_client() -> OpenAI:
-    """
-    Get an OpenAI-compatible LLM client.
-    Works with both OpenAI API and local LLaMA (via Ollama, llama.cpp server, etc.).
-    """
-    return OpenAI(
-        api_key=settings.OPENAI_API_KEY,
-        base_url=settings.LLM_BASE_URL,
-    )
-
+import google.generativeai as genai
 
 def extract_job_data(content: str) -> dict:
     """
-    Send job description content to the LLM and extract structured job data.
+    Send job description content to Gemini and extract structured job data.
     Returns a validated dictionary with job fields.
     """
     if not content or not content.strip():
         raise ValueError("No content provided for extraction")
 
-    client = get_llm_client()
     prompt = EXTRACTION_PROMPT.format(content=content)
 
     try:
-        response = client.chat.completions.create(
-            model=settings.LLM_MODEL,
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a precise data extraction assistant. Always respond with valid JSON only.",
-                },
-                {"role": "user", "content": prompt},
-            ],
-            temperature=0.1,
-            max_tokens=500,
+        # Configure the Gemini API
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+        
+        # We can use gemini-flash-latest as the fast and cheap default
+        model = genai.GenerativeModel('gemini-flash-latest')
+        
+        response = model.generate_content(
+            prompt,
+            generation_config=genai.types.GenerationConfig(
+                temperature=0.1,
+                response_mime_type="application/json",
+            )
         )
-
-        raw_response = response.choices[0].message.content.strip()
+        
+        raw_response = response.text.strip()
+        
         return parse_ai_response(raw_response)
 
     except Exception as e:
