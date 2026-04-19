@@ -57,7 +57,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
         title: const Text('Delete Job', style: TextStyle(color: Colors.white)),
         content: Text(
           'Are you sure you want to delete this job entry for ${_job.company}?',
-          style: TextStyle(color: Colors.white.withOpacity(0.7)),
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.7)),
         ),
         actions: [
           TextButton(
@@ -129,14 +129,14 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF6C63FF).withOpacity(0.2),
-                    const Color(0xFF9D4EDD).withOpacity(0.1),
+                    const Color(0xFF6C63FF).withValues(alpha: 0.2),
+                    const Color(0xFF9D4EDD).withValues(alpha: 0.1),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFF6C63FF).withOpacity(0.2)),
+                border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.2)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,7 +147,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF6C63FF).withOpacity(0.3),
+                          color: const Color(0xFF6C63FF).withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Center(
@@ -177,7 +177,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                             Text(
                               _job.role,
                               style: TextStyle(
-                                color: const Color(0xFF6C63FF).withOpacity(0.9),
+                                color: const Color(0xFF6C63FF).withValues(alpha: 0.9),
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -210,18 +210,18 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                       decoration: BoxDecoration(
                         color: isActive
                             ? const Color(0xFF6C63FF)
-                            : Colors.white.withOpacity(0.05),
+                            : Colors.white.withValues(alpha: 0.05),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
                           color: isActive
                               ? const Color(0xFF6C63FF)
-                              : Colors.white.withOpacity(0.1),
+                              : Colors.white.withValues(alpha: 0.1),
                         ),
                       ),
                       child: Text(
                         status.value,
                         style: TextStyle(
-                          color: isActive ? Colors.white : Colors.white.withOpacity(0.6),
+                          color: isActive ? Colors.white : Colors.white.withValues(alpha: 0.6),
                           fontSize: 13,
                           fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
                         ),
@@ -270,9 +270,9 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF6C63FF).withOpacity(0.15),
+                        color: const Color(0xFF6C63FF).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: const Color(0xFF6C63FF).withOpacity(0.25)),
+                        border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.25)),
                       ),
                       child: Text(
                         skill,
@@ -296,7 +296,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                 child: Text(
                   _job.notes!,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 14,
                     height: 1.5,
                   ),
@@ -316,9 +316,9 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF16213E).withOpacity(0.6),
+        color: const Color(0xFF16213E).withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -344,14 +344,14 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.white.withOpacity(0.4), size: 18),
+          Icon(icon, color: Colors.white.withValues(alpha: 0.4), size: 18),
           const SizedBox(width: 10),
           SizedBox(
             width: 70,
             child: Text(
               label,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withValues(alpha: 0.5),
                 fontSize: 13,
               ),
             ),

@@ -23,19 +23,19 @@ class JobCard extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              const Color(0xFF16213E).withOpacity(0.9),
-              const Color(0xFF1A1A2E).withOpacity(0.9),
+              const Color(0xFF16213E).withValues(alpha: 0.9),
+              const Color(0xFF1A1A2E).withValues(alpha: 0.9),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: Colors.white.withOpacity(0.08),
+            color: Colors.white.withValues(alpha: 0.08),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -69,7 +69,7 @@ class JobCard extends StatelessWidget {
                         Text(
                           job.role,
                           style: TextStyle(
-                            color: const Color(0xFF6C63FF).withOpacity(0.9),
+                            color: const Color(0xFF6C63FF).withValues(alpha: 0.9),
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -92,14 +92,14 @@ class JobCard extends StatelessWidget {
                     Icon(
                       Icons.location_on_outlined,
                       size: 14,
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                     ),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         job.location!,
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
+                          color: Colors.white.withValues(alpha: 0.5),
                           fontSize: 12,
                         ),
                         maxLines: 1,
@@ -112,13 +112,13 @@ class JobCard extends StatelessWidget {
                     Icon(
                       Icons.calendar_today_outlined,
                       size: 12,
-                      color: Colors.white.withOpacity(0.4),
+                      color: Colors.white.withValues(alpha: 0.4),
                     ),
                     const SizedBox(width: 4),
                     Text(
                       job.appliedDate!,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.4),
+                        color: Colors.white.withValues(alpha: 0.4),
                         fontSize: 11,
                       ),
                     ),
@@ -136,10 +136,10 @@ class JobCard extends StatelessWidget {
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF6C63FF).withOpacity(0.1),
+                        color: const Color(0xFF6C63FF).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: const Color(0xFF6C63FF).withOpacity(0.2),
+                          color: const Color(0xFF6C63FF).withValues(alpha: 0.2),
                         ),
                       ),
                       child: Text(

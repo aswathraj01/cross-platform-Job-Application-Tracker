@@ -94,7 +94,7 @@ class _SignupScreenState extends State<SignupScreen>
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF6C63FF).withOpacity(0.4),
+                            color: const Color(0xFF6C63FF).withValues(alpha: 0.4),
                             blurRadius: 20,
                             offset: const Offset(0, 8),
                           ),
@@ -120,7 +120,7 @@ class _SignupScreenState extends State<SignupScreen>
                       'Start tracking your applications',
                       style: GoogleFonts.inter(
                         fontSize: 14,
-                        color: Colors.white.withOpacity(0.5),
+                        color: Colors.white.withValues(alpha: 0.5),
                       ),
                     ),
                     const SizedBox(height: 40),
@@ -129,12 +129,12 @@ class _SignupScreenState extends State<SignupScreen>
                     Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF16213E).withOpacity(0.6),
+                        color: const Color(0xFF16213E).withValues(alpha: 0.6),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withOpacity(0.08)),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
+                            color: Colors.black.withValues(alpha: 0.3),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
@@ -178,7 +178,7 @@ class _SignupScreenState extends State<SignupScreen>
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                                  color: Colors.white.withOpacity(0.4),
+                                  color: Colors.white.withValues(alpha: 0.4),
                                   size: 20,
                                 ),
                                 onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
@@ -200,7 +200,7 @@ class _SignupScreenState extends State<SignupScreen>
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   _obscureConfirm ? Icons.visibility_off : Icons.visibility,
-                                  color: Colors.white.withOpacity(0.4),
+                                  color: Colors.white.withValues(alpha: 0.4),
                                   size: 20,
                                 ),
                                 onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
@@ -275,7 +275,7 @@ class _SignupScreenState extends State<SignupScreen>
                         Text(
                           'Already have an account? ',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.5),
+                            color: Colors.white.withValues(alpha: 0.5),
                             fontSize: 14,
                           ),
                         ),
@@ -322,18 +322,18 @@ class _SignupScreenState extends State<SignupScreen>
       style: const TextStyle(color: Colors.white, fontSize: 14),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
-        prefixIcon: Icon(icon, color: Colors.white.withOpacity(0.4), size: 20),
+        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
+        prefixIcon: Icon(icon, color: Colors.white.withValues(alpha: 0.4), size: 20),
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: Colors.white.withOpacity(0.05),
+        fillColor: Colors.white.withValues(alpha: 0.05),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

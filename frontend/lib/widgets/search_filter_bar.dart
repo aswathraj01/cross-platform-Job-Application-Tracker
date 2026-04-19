@@ -34,10 +34,10 @@ class SearchFilterBar extends StatelessWidget {
           // Search bar
           Container(
             decoration: BoxDecoration(
-              color: const Color(0xFF16213E).withOpacity(0.8),
+              color: const Color(0xFF16213E).withValues(alpha: 0.8),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
               ),
             ),
             child: TextField(
@@ -45,16 +45,16 @@ class SearchFilterBar extends StatelessWidget {
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: 'Search by company, role, or location...',
-                hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
+                hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
                 prefixIcon: Icon(
                   Icons.search,
-                  color: Colors.white.withOpacity(0.4),
+                  color: Colors.white.withValues(alpha: 0.4),
                 ),
                 suffixIcon: searchQuery.isNotEmpty
                     ? IconButton(
                         icon: Icon(
                           Icons.clear,
-                          color: Colors.white.withOpacity(0.4),
+                          color: Colors.white.withValues(alpha: 0.4),
                         ),
                         onPressed: () => onSearchChanged(''),
                       )
@@ -110,18 +110,18 @@ class SearchFilterBar extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? const Color(0xFF6C63FF)
-              : const Color(0xFF16213E).withOpacity(0.6),
+              : const Color(0xFF16213E).withValues(alpha: 0.6),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
                 ? const Color(0xFF6C63FF)
-                : Colors.white.withOpacity(0.1),
+                : Colors.white.withValues(alpha: 0.1),
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
+            color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.6),
             fontSize: 12,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           ),

@@ -32,13 +32,13 @@ class AnalyticsChart extends StatelessWidget {
             Icon(
               Icons.pie_chart_outline,
               size: 48,
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
             ),
             const SizedBox(height: 8),
             Text(
               'No applications yet',
               style: TextStyle(
-                color: Colors.white.withOpacity(0.4),
+                color: Colors.white.withValues(alpha: 0.4),
                 fontSize: 14,
               ),
             ),
@@ -104,7 +104,7 @@ class AnalyticsChart extends StatelessWidget {
                 Text(
                   '${entry.key} (${entry.value})',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 11,
                   ),
                 ),

@@ -115,12 +115,12 @@ class _AiExtractScreenState extends State<AiExtractScreen>
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF6C63FF).withOpacity(0.2),
-                    const Color(0xFF9D4EDD).withOpacity(0.1),
+                    const Color(0xFF6C63FF).withValues(alpha: 0.2),
+                    const Color(0xFF9D4EDD).withValues(alpha: 0.1),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFF6C63FF).withOpacity(0.2)),
+                border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.2)),
               ),
               child: Row(
                 children: [
@@ -151,7 +151,7 @@ class _AiExtractScreenState extends State<AiExtractScreen>
                         Text(
                           'Paste a job description or URL to auto-fill job data',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.5),
+                            color: Colors.white.withValues(alpha: 0.5),
                             fontSize: 12,
                           ),
                         ),
@@ -166,7 +166,7 @@ class _AiExtractScreenState extends State<AiExtractScreen>
             // Tabs
             Container(
               decoration: BoxDecoration(
-                color: const Color(0xFF16213E).withOpacity(0.6),
+                color: const Color(0xFF16213E).withValues(alpha: 0.6),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: TabBar(
@@ -202,16 +202,16 @@ class _AiExtractScreenState extends State<AiExtractScreen>
                     style: const TextStyle(color: Colors.white, fontSize: 13),
                     decoration: InputDecoration(
                       hintText: 'Paste the full job description here...',
-                      hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
+                      hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.05),
+                      fillColor: Colors.white.withValues(alpha: 0.05),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+                        borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -229,17 +229,17 @@ class _AiExtractScreenState extends State<AiExtractScreen>
                         style: const TextStyle(color: Colors.white, fontSize: 14),
                         decoration: InputDecoration(
                           hintText: 'https://jobs.example.com/posting/123',
-                          hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
-                          prefixIcon: Icon(Icons.link, color: Colors.white.withOpacity(0.4)),
+                          hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
+                          prefixIcon: Icon(Icons.link, color: Colors.white.withValues(alpha: 0.4)),
                           filled: true,
-                          fillColor: Colors.white.withOpacity(0.05),
+                          fillColor: Colors.white.withValues(alpha: 0.05),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide.none,
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+                            borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -251,7 +251,7 @@ class _AiExtractScreenState extends State<AiExtractScreen>
                       Text(
                         'The AI will scrape the page and extract job details automatically.',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.4),
+                          color: Colors.white.withValues(alpha: 0.4),
                           fontSize: 12,
                         ),
                         textAlign: TextAlign.center,
@@ -269,9 +269,9 @@ class _AiExtractScreenState extends State<AiExtractScreen>
                 padding: const EdgeInsets.all(12),
                 margin: const EdgeInsets.only(bottom: 12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEF4444).withOpacity(0.1),
+                  color: const Color(0xFFEF4444).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: const Color(0xFFEF4444).withOpacity(0.3)),
+                  border: Border.all(color: const Color(0xFFEF4444).withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   children: [
@@ -318,9 +318,9 @@ class _AiExtractScreenState extends State<AiExtractScreen>
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF16213E).withOpacity(0.6),
+                  color: const Color(0xFF16213E).withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFF10B981).withOpacity(0.3)),
+                  border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.3)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -354,7 +354,7 @@ class _AiExtractScreenState extends State<AiExtractScreen>
                             Text(
                               'Skills',
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.5),
+                                color: Colors.white.withValues(alpha: 0.5),
                                 fontSize: 12,
                               ),
                             ),
@@ -367,7 +367,7 @@ class _AiExtractScreenState extends State<AiExtractScreen>
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 8, vertical: 3),
                                         decoration: BoxDecoration(
-                                          color: const Color(0xFF6C63FF).withOpacity(0.15),
+                                          color: const Color(0xFF6C63FF).withValues(alpha: 0.15),
                                           borderRadius: BorderRadius.circular(6),
                                         ),
                                         child: Text(
@@ -392,9 +392,9 @@ class _AiExtractScreenState extends State<AiExtractScreen>
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF6C63FF).withOpacity(0.1),
+                        color: const Color(0xFF6C63FF).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFF6C63FF).withOpacity(0.2)),
+                        border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.2)),
                       ),
                       child: Column(
                         children: [
@@ -467,7 +467,7 @@ class _AiExtractScreenState extends State<AiExtractScreen>
             child: Text(
               label,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withValues(alpha: 0.5),
                 fontSize: 12,
               ),
             ),

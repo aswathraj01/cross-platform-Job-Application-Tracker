@@ -208,9 +208,9 @@ class _AddJobScreenState extends State<AddJobScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Colors.white.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white.withOpacity(0.08)),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<JobStatus>(
@@ -218,7 +218,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
                     isExpanded: true,
                     dropdownColor: const Color(0xFF16213E),
                     style: const TextStyle(color: Colors.white, fontSize: 14),
-                    icon: Icon(Icons.expand_more, color: Colors.white.withOpacity(0.4)),
+                    icon: Icon(Icons.expand_more, color: Colors.white.withValues(alpha: 0.4)),
                     items: JobStatus.values.map((status) {
                       return DropdownMenuItem(
                         value: status,
@@ -238,13 +238,13 @@ class _AddJobScreenState extends State<AddJobScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withOpacity(0.08)),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.calendar_today, color: Colors.white.withOpacity(0.4), size: 18),
+                      Icon(Icons.calendar_today, color: Colors.white.withValues(alpha: 0.4), size: 18),
                       const SizedBox(width: 12),
                       Text(
                         _appliedDate != null
@@ -253,7 +253,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
                         style: TextStyle(
                           color: _appliedDate != null
                               ? Colors.white
-                              : Colors.white.withOpacity(0.3),
+                              : Colors.white.withValues(alpha: 0.3),
                           fontSize: 14,
                         ),
                       ),
@@ -302,10 +302,10 @@ class _AddJobScreenState extends State<AddJobScreen> {
                         skill,
                         style: const TextStyle(color: Colors.white, fontSize: 12),
                       ),
-                      backgroundColor: const Color(0xFF6C63FF).withOpacity(0.2),
+                      backgroundColor: const Color(0xFF6C63FF).withValues(alpha: 0.2),
                       deleteIcon: const Icon(Icons.close, size: 16, color: Colors.white54),
                       onDeleted: () => setState(() => _skills.remove(skill)),
-                      side: BorderSide(color: const Color(0xFF6C63FF).withOpacity(0.3)),
+                      side: BorderSide(color: const Color(0xFF6C63FF).withValues(alpha: 0.3)),
                     );
                   }).toList(),
                 ),
@@ -320,16 +320,16 @@ class _AddJobScreenState extends State<AddJobScreen> {
                 style: const TextStyle(color: Colors.white, fontSize: 14),
                 decoration: InputDecoration(
                   hintText: 'Any additional notes...',
-                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
+                  hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
                   filled: true,
-                  fillColor: Colors.white.withOpacity(0.05),
+                  fillColor: Colors.white.withValues(alpha: 0.05),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+                    borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -385,7 +385,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
       child: Text(
         text,
         style: TextStyle(
-          color: Colors.white.withOpacity(0.7),
+          color: Colors.white.withValues(alpha: 0.7),
           fontSize: 13,
           fontWeight: FontWeight.w500,
         ),
@@ -407,17 +407,17 @@ class _AddJobScreenState extends State<AddJobScreen> {
       style: const TextStyle(color: Colors.white, fontSize: 14),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
-        prefixIcon: Icon(icon, color: Colors.white.withOpacity(0.4), size: 20),
+        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
+        prefixIcon: Icon(icon, color: Colors.white.withValues(alpha: 0.4), size: 20),
         filled: true,
-        fillColor: Colors.white.withOpacity(0.05),
+        fillColor: Colors.white.withValues(alpha: 0.05),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

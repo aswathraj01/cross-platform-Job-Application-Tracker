@@ -29,7 +29,8 @@ JOB DESCRIPTION:
 {content}
 \"\"\""""
 
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 def extract_job_data(content: str) -> dict:
     """
@@ -42,15 +43,14 @@ def extract_job_data(content: str) -> dict:
     prompt = EXTRACTION_PROMPT.format(content=content)
 
     try:
-        # Configure the Gemini API
-        genai.configure(api_key=settings.GEMINI_API_KEY)
+        # Initialize GenAI Client
+        client = genai.Client(api_key=settings.GEMINI_API_KEY)
         
-        # We can use gemini-flash-latest as the fast and cheap default
-        model = genai.GenerativeModel('gemini-flash-latest')
-        
-        response = model.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(
+        # We can use gemini-1.5-flash as the fast and cheap default
+        response = client.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=prompt,
+            config=types.GenerateContentConfig(
                 temperature=0.1,
                 response_mime_type="application/json",
             )

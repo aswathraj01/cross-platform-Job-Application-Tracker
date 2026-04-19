@@ -84,7 +84,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           IconButton(
             onPressed: _logout,
-            icon: Icon(Icons.logout, color: Colors.white.withOpacity(0.7)),
+            icon: Icon(Icons.logout, color: Colors.white.withValues(alpha: 0.7)),
             tooltip: 'Logout',
           ),
         ],
@@ -112,9 +112,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF16213E).withOpacity(0.6),
+                            color: const Color(0xFF16213E).withValues(alpha: 0.6),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white.withOpacity(0.08)),
+                            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,12 +142,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  const Color(0xFF6C63FF).withOpacity(0.2),
-                                  const Color(0xFF9D4EDD).withOpacity(0.1),
+                                  const Color(0xFF6C63FF).withValues(alpha: 0.2),
+                                  const Color(0xFF9D4EDD).withValues(alpha: 0.1),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: const Color(0xFF6C63FF).withOpacity(0.2)),
+                              border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.2)),
                             ),
                             child: Row(
                               children: [
@@ -168,7 +168,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       Text(
                                         'Offer Rate: ${jobProvider.successRate.toStringAsFixed(1)}%',
                                         style: TextStyle(
-                                          color: Colors.white.withOpacity(0.6),
+                                          color: Colors.white.withValues(alpha: 0.6),
                                           fontSize: 12,
                                         ),
                                       ),
@@ -226,13 +226,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Icon(
                             Icons.work_off_outlined,
                             size: 64,
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withValues(alpha: 0.2),
                           ),
                           const SizedBox(height: 16),
                           Text(
                             'No jobs tracked yet',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.4),
+                              color: Colors.white.withValues(alpha: 0.4),
                               fontSize: 16,
                             ),
                           ),
@@ -240,7 +240,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Text(
                             'Add your first job application!',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white.withValues(alpha: 0.3),
                               fontSize: 13,
                             ),
                           ),
@@ -338,9 +338,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withOpacity(0.2)),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
         child: Column(
           children: [
@@ -357,7 +357,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Text(
               label,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.white.withValues(alpha: 0.5),
                 fontSize: 11,
               ),
             ),
