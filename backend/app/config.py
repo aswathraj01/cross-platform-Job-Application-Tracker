@@ -10,10 +10,10 @@ class Settings(BaseSettings):
     """Application configuration loaded from environment variables."""
 
     # LLM Configuration
-    LLM_PROVIDER: str = "openai"  # "openai" or "local"
-    OPENAI_API_KEY: str = "your-openai-api-key"
+    LLM_PROVIDER: str = "gemini"
+    OPENAI_API_KEY: str = ""
     LLM_BASE_URL: str = "https://api.openai.com/v1"
-    LLM_MODEL: str = "gpt-3.5-turbo"
+    LLM_MODEL: str = "gemini-1.5-flash"
     GEMINI_API_KEY: str = ""
 
     # Firebase Configuration
@@ -24,8 +24,18 @@ class Settings(BaseSettings):
     HOST: str = "0.0.0.0"
     PORT: int = 8000
 
-    # CORS
-    CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:8080", "http://localhost:5000", "*"]
+    # CORS — includes localhost dev + Firebase Hosting + any deployed frontend
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:3000",
+        "http://localhost:8080",
+        "http://localhost:5000",
+        "http://localhost:8000",
+        # Firebase Hosting
+        "https://job-application-tracker-9f4d8.web.app",
+        "https://job-application-tracker-9f4d8.firebaseapp.com",
+        # Wildcard for development convenience
+        "*",
+    ]
 
     class Config:
         env_file = ".env"
