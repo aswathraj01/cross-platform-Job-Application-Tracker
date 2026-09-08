@@ -24,7 +24,15 @@ def scrape_job_page(url: str) -> str:
     except requests.exceptions.RequestException as e:
         raise ValueError(f"Failed to fetch URL: {str(e)}")
 
-    soup = BeautifulSoup(response.text, "html.parser")
+    return extract_from_html(response.text, url)
+
+
+def extract_from_html(html: str, url: str = "") -> str:
+    """
+    Extract meaningful job description text from raw HTML.
+    Used both by the server-side scraper and the extension content script path.
+    """
+    soup = BeautifulSoup(html, "html.parser")
 
     # Remove unwanted elements
     for tag in soup.find_all(["script", "style", "nav", "footer", "header", "iframe", "noscript"]):
@@ -34,8 +42,8 @@ def scrape_job_page(url: str) -> str:
     main_content = (
         soup.find("main")
         or soup.find("article")
-        or soup.find("div", {"class": re.compile(r"job|posting|description|content", re.I)})
-        or soup.find("div", {"id": re.compile(r"job|posting|description|content", re.I)})
+        or soup.find("div", {"class": re.compile(r"job|posting|description|content|detail", re.I)})
+        or soup.find("div", {"id": re.compile(r"job|posting|description|content|detail", re.I)})
         or soup.body
     )
 
@@ -48,6 +56,10 @@ def scrape_job_page(url: str) -> str:
     # Clean up excessive whitespace
     lines = [line.strip() for line in text.splitlines() if line.strip()]
     cleaned_text = "\n".join(lines)
+
+    # Prepend URL hint for AI context
+    if url:
+        cleaned_text = f"Page URL: {url}\n\n" + cleaned_text
 
     # Truncate if too long (LLM context limits)
     max_chars = 8000

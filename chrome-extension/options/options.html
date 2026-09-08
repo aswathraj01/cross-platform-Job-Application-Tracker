@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Job Tracker — Settings</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, 'Inter', 'Segoe UI', sans-serif;
+      background: #0F0F23; color: #fff; min-height: 100vh;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 40px 20px;
+    }
+    .container { width: 100%; max-width: 500px; }
+    .header {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 32px;
+    }
+    .brand-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(135deg, #6C63FF, #9D4EDD);
+      display: flex; align-items: center; justify-content: center;
+    }
+    h1 { font-size: 20px; font-weight: 700; }
+    .subtitle { color: rgba(255,255,255,0.5); font-size: 13px; }
+
+    .card {
+      background: rgba(22,33,62,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .card-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6); margin-bottom: 6px; }
+    .field input, .field select {
+      width: 100%; background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px; color: #fff; font-size: 13px;
+      padding: 10px 12px; outline: none;
+      transition: border-color 0.15s; font-family: inherit;
+    }
+    .field input:focus { border-color: #6C63FF; }
+
+    .account-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 0;
+    }
+    .account-info .account-email { font-size: 14px; font-weight: 500; }
+    .account-info .account-status { font-size: 11px; color: #10B981; }
+
+    .btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: none; transition: all 0.15s;
+    }
+    .btn-primary { background: linear-gradient(135deg, #6C63FF, #9D4EDD); color: #fff; width: 100%; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-danger { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #EF4444; }
+    .btn-danger:hover { background: rgba(239,68,68,0.2); }
+
+    .status-msg {
+      font-size: 12px; padding: 8px 12px; border-radius: 8px;
+      margin-top: 12px; display: none;
+    }
+    .status-msg.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: #10B981; display: block; }
+    .status-msg.error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #EF4444; display: block; }
+
+    .divider { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M20 7H4C2.9 7 2 7.9 2 9V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V9C22 7.9 21.1 7 20 7Z" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <path d="M16 7V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V7" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Job Tracker Settings</h1>
+        <p class="subtitle">Configure your extension preferences</p>
+      </div>
+    </div>
+
+    <!-- Account -->
+    <div class="card">
+      <div class="card-title">Account</div>
+      <div class="account-row">
+        <div class="account-info">
+          <div id="account-email" class="account-email">Not connected</div>
+          <div id="account-status" class="account-status" style="display:none">● Connected</div>
+        </div>
+        <button id="btn-logout" class="btn btn-danger">Sign Out</button>
+      </div>
+    </div>
+
+    <!-- API Configuration -->
+    <div class="card">
+      <div class="card-title">Backend Configuration</div>
+      <div class="field">
+        <label for="api-base">Backend API URL</label>
+        <input id="api-base" type="url" placeholder="http://localhost:8000/api" />
+      </div>
+      <p style="color:rgba(255,255,255,0.35);font-size:11px;margin-bottom:14px">
+        Point this to your deployed backend URL. For local development, use the default.
+        The Chrome extension cannot reach <code style="color:#6C63FF">localhost</code> from some network configs — use ngrok for testing.
+      </p>
+      <button id="btn-save" class="btn btn-primary">Save Settings</button>
+      <div id="status-msg" class="status-msg"></div>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

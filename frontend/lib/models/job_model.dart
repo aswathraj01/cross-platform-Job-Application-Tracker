@@ -17,6 +17,37 @@ enum JobStatus {
   }
 }
 
+/// Enum for how the job was added.
+enum JobSource {
+  manual,
+  aiExtract,
+  extension;
+
+  static JobSource fromString(String? s) {
+    switch (s) {
+      case 'extension': return JobSource.extension;
+      case 'ai_extract': return JobSource.aiExtract;
+      default: return JobSource.manual;
+    }
+  }
+
+  String get displayLabel {
+    switch (this) {
+      case JobSource.extension: return 'Extension';
+      case JobSource.aiExtract: return 'AI Extract';
+      case JobSource.manual: return 'Manual';
+    }
+  }
+
+  String get apiValue {
+    switch (this) {
+      case JobSource.extension: return 'extension';
+      case JobSource.aiExtract: return 'ai_extract';
+      case JobSource.manual: return 'manual';
+    }
+  }
+}
+
 /// Job model representing a job application entry.
 class JobModel {
   final String? id;
@@ -31,6 +62,8 @@ class JobModel {
   final String? userId;
   final String? createdAt;
   final String? updatedAt;
+  final JobSource source;
+  final String? domain;
 
   JobModel({
     this.id,
@@ -45,6 +78,8 @@ class JobModel {
     this.userId,
     this.createdAt,
     this.updatedAt,
+    this.source = JobSource.manual,
+    this.domain,
   });
 
   factory JobModel.fromJson(Map<String, dynamic> json) {
@@ -61,6 +96,8 @@ class JobModel {
       userId: json['user_id'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
+      source: JobSource.fromString(json['source']),
+      domain: json['domain'],
     );
   }
 
@@ -75,6 +112,8 @@ class JobModel {
       'application_link': applicationLink,
       'notes': notes,
       'skills': skills,
+      'source': source.apiValue,
+      'domain': domain,
     };
   }
 
@@ -91,6 +130,8 @@ class JobModel {
     String? userId,
     String? createdAt,
     String? updatedAt,
+    JobSource? source,
+    String? domain,
   }) {
     return JobModel(
       id: id ?? this.id,
@@ -105,6 +146,8 @@ class JobModel {
       userId: userId ?? this.userId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      source: source ?? this.source,
+      domain: domain ?? this.domain,
     );
   }
 }

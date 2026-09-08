@@ -3,6 +3,7 @@ from firebase_admin import credentials, auth, firestore
 from datetime import datetime
 import requests
 import json
+from urllib.parse import urlparse
 from app.config import get_settings
 
 settings = get_settings()
@@ -106,6 +107,17 @@ def verify_token(token: str) -> dict:
 
 # ==================== JOB OPERATIONS ====================
 
+def _extract_domain(url: str) -> str | None:
+    """Extract the hostname domain from a URL."""
+    if not url:
+        return None
+    try:
+        parsed = urlparse(url)
+        return parsed.netloc.lower().lstrip("www.") if parsed.netloc else None
+    except Exception:
+        return None
+
+
 def create_job(user_id: str, job_data: dict) -> dict:
     """Create a new job entry in Firestore."""
     db = get_firestore_client()
@@ -114,11 +126,16 @@ def create_job(user_id: str, job_data: dict) -> dict:
     job_data["created_at"] = now
     job_data["updated_at"] = now
 
+    # Auto-extract domain from application_link if not already set
+    if not job_data.get("domain") and job_data.get("application_link"):
+        job_data["domain"] = _extract_domain(job_data["application_link"])
+
     doc_ref = db.collection("users").document(user_id).collection("jobs").document()
     doc_ref.set(job_data)
 
     job_data["id"] = doc_ref.id
     return job_data
+
 
 
 def get_jobs(user_id: str, status: str = None, company: str = None) -> list:
@@ -188,3 +205,23 @@ def delete_job(user_id: str, job_id: str) -> bool:
 
     doc_ref.delete()
     return True
+
+
+def check_domain_applied(user_id: str, domain: str) -> list:
+    """
+    Check if a user has any job entries matching a given domain.
+    Returns a list of matching job dicts (empty if none).
+    """
+    db = get_firestore_client()
+    query = db.collection("users").document(user_id).collection("jobs")
+    docs = query.stream()
+
+    matches = []
+    for doc in docs:
+        job = doc.to_dict()
+        job["id"] = doc.id
+        job_domain = job.get("domain") or _extract_domain(job.get("application_link", "") or "")
+        if job_domain and domain and job_domain.lower() == domain.lower():
+            matches.append(job)
+
+    return matches

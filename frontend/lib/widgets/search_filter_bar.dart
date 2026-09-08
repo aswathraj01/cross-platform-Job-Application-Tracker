@@ -4,16 +4,20 @@ import 'package:flutter/material.dart';
 class SearchFilterBar extends StatelessWidget {
   final String searchQuery;
   final String? statusFilter;
+  final String? sourceFilter;
   final ValueChanged<String> onSearchChanged;
   final ValueChanged<String?> onStatusChanged;
+  final ValueChanged<String?> onSourceChanged;
   final VoidCallback onClearFilters;
 
   const SearchFilterBar({
     super.key,
     required this.searchQuery,
     required this.statusFilter,
+    this.sourceFilter,
     required this.onSearchChanged,
     required this.onStatusChanged,
+    required this.onSourceChanged,
     required this.onClearFilters,
   });
 
@@ -23,6 +27,12 @@ class SearchFilterBar extends StatelessWidget {
     'Interview',
     'Rejected',
     'Offer',
+  ];
+
+  static const List<(String, String, String)> _sources = [
+    ('extension', '🧩', 'Extension'),
+    ('ai_extract', '✨', 'AI'),
+    ('manual', '✏️', 'Manual'),
   ];
 
   @override
@@ -77,8 +87,11 @@ class SearchFilterBar extends StatelessWidget {
               children: [
                 _buildChip(
                   label: 'All',
-                  isSelected: statusFilter == null,
-                  onTap: () => onStatusChanged(null),
+                  isSelected: statusFilter == null && sourceFilter == null,
+                  onTap: () {
+                    onStatusChanged(null);
+                    onSourceChanged(null);
+                  },
                 ),
                 const SizedBox(width: 8),
                 ..._statuses.map((status) => Padding(
@@ -87,6 +100,26 @@ class SearchFilterBar extends StatelessWidget {
                         label: status,
                         isSelected: statusFilter == status,
                         onTap: () => onStatusChanged(status),
+                      ),
+                    )),
+                const SizedBox(width: 4),
+                // Divider
+                Container(
+                  width: 1,
+                  height: 20,
+                  margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                  color: Colors.white12,
+                ),
+                const SizedBox(width: 4),
+                // Source filters
+                ..._sources.map((s) => Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: _buildSourceChip(
+                        apiValue: s.$1,
+                        emoji: s.$2,
+                        label: s.$3,
+                        isSelected: sourceFilter == s.$1,
+                        onTap: () => onSourceChanged(sourceFilter == s.$1 ? null : s.$1),
                       ),
                     )),
               ],
@@ -122,6 +155,38 @@ class SearchFilterBar extends StatelessWidget {
           label,
           style: TextStyle(
             color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.6),
+            fontSize: 12,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSourceChip({
+    required String apiValue,
+    required String emoji,
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    const color = Color(0xFF9D4EDD);
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          color: isSelected ? color.withValues(alpha: 0.3) : color.withValues(alpha: 0.07),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? color : color.withValues(alpha: 0.2),
+          ),
+        ),
+        child: Text(
+          '$emoji $label',
+          style: TextStyle(
+            color: isSelected ? Colors.white : color.withValues(alpha: 0.8),
             fontSize: 12,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
           ),

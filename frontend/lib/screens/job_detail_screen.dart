@@ -188,7 +188,13 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  StatusBadge(status: _job.status, fontSize: 14),
+                  Row(
+                    children: [
+                      StatusBadge(status: _job.status, fontSize: 14),
+                      const SizedBox(width: 8),
+                      _buildSourceTag(_job.source),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -367,6 +373,52 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSourceTag(JobSource source) {
+    String emoji;
+    String label;
+    Color color;
+    switch (source) {
+      case JobSource.extension:
+        emoji = '🧩';
+        label = 'Via Extension';
+        color = const Color(0xFF9D4EDD);
+        break;
+      case JobSource.aiExtract:
+        emoji = '✨';
+        label = 'AI Extracted';
+        color = const Color(0xFFF59E0B);
+        break;
+      case JobSource.manual:
+        emoji = '✏️';
+        label = 'Manual';
+        color = Colors.white38;
+        break;
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(emoji, style: const TextStyle(fontSize: 12)),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],

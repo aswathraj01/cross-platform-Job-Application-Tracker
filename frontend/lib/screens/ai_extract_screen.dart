@@ -79,6 +79,7 @@ class _AiExtractScreenState extends State<AiExtractScreen>
         builder: (_) => AddJobScreen(
           prefillData: _extractedData,
           initialStatus: hasApplied ? JobStatus.applied : JobStatus.notApplied,
+          source: JobSource.aiExtract,
         ),
       ),
     );

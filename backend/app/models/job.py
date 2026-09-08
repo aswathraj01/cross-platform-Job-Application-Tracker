@@ -23,6 +23,8 @@ class JobCreate(BaseModel):
     application_link: Optional[str] = Field(None, max_length=500, description="Link to job posting")
     notes: Optional[str] = Field(None, max_length=2000, description="Additional notes")
     skills: list[str] = Field(default_factory=list, description="Required skills")
+    source: Optional[str] = Field(default="manual", description="Source: manual, ai_extract, extension")
+    domain: Optional[str] = Field(None, max_length=200, description="Domain of the job posting")
 
 
 class JobUpdate(BaseModel):
@@ -35,6 +37,8 @@ class JobUpdate(BaseModel):
     application_link: Optional[str] = Field(None, max_length=500)
     notes: Optional[str] = Field(None, max_length=2000)
     skills: Optional[list[str]] = None
+    source: Optional[str] = None
+    domain: Optional[str] = Field(None, max_length=200)
 
 
 class JobResponse(BaseModel):
@@ -51,12 +55,15 @@ class JobResponse(BaseModel):
     user_id: str
     created_at: str
     updated_at: Optional[str] = None
+    source: Optional[str] = "manual"
+    domain: Optional[str] = None
 
 
 class AIExtractionRequest(BaseModel):
     """Schema for AI extraction request."""
     text: Optional[str] = Field(None, description="Job description text")
     url: Optional[str] = Field(None, description="URL to job posting")
+    html: Optional[str] = Field(None, description="Raw HTML from extension content script")
 
 
 class AIExtractionResponse(BaseModel):
@@ -67,3 +74,36 @@ class AIExtractionResponse(BaseModel):
     skills: list[str] = []
     application_link: Optional[str] = None
     notes: Optional[str] = None
+    domain: Optional[str] = None
+
+
+class ExtensionScrapeRequest(BaseModel):
+    """Schema for extension scrape+extract request."""
+    url: str = Field(..., description="Current page URL")
+    html: Optional[str] = Field(None, description="Page HTML from extension")
+    title: Optional[str] = Field(None, description="Page title")
+
+
+class ExtensionCheckRequest(BaseModel):
+    """Schema for checking if a domain was already applied to."""
+    domain: str = Field(..., description="Domain to check")
+    url: Optional[str] = Field(None, description="Full URL for more precise check")
+
+
+class ExtensionCheckResponse(BaseModel):
+    """Schema for domain check response."""
+    applied: bool
+    jobs: list[JobResponse] = []
+
+
+class ExtensionCaptureRequest(BaseModel):
+    """Schema for capturing a job via extension."""
+    company: str = Field(..., min_length=1, max_length=200)
+    role: str = Field(..., min_length=1, max_length=200)
+    location: Optional[str] = None
+    status: JobStatus = Field(default=JobStatus.APPLIED)
+    applied_date: Optional[str] = None
+    application_link: Optional[str] = None
+    notes: Optional[str] = None
+    skills: list[str] = Field(default_factory=list)
+    domain: Optional[str] = None

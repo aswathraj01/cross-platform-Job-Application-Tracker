@@ -10,11 +10,13 @@ import '../providers/job_provider.dart';
 class AddJobScreen extends StatefulWidget {
   final Map<String, dynamic>? prefillData;
   final JobStatus? initialStatus;
+  final JobSource source;
 
   const AddJobScreen({
     super.key,
     this.prefillData,
     this.initialStatus,
+    this.source = JobSource.manual,
   });
 
   @override
@@ -121,6 +123,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
           ? _notesController.text.trim()
           : null,
       skills: _skills,
+      source: widget.source,
     );
 
     final success = await context.read<JobProvider>().createJob(token, job);

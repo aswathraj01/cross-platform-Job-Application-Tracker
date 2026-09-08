@@ -14,6 +14,11 @@ class ApiConfig {
   // AI endpoints
   static const String aiExtractUrl = '$baseUrl/ai/extract';
 
+  // Extension endpoints
+  static const String extensionScrapeUrl = '$baseUrl/extension/scrape';
+  static const String extensionCheckUrl = '$baseUrl/extension/check';
+  static const String extensionCaptureUrl = '$baseUrl/extension/capture';
+
   /// Request timeout in seconds
   static const int timeoutSeconds = 30;
 }

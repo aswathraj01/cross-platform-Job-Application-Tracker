@@ -83,9 +83,9 @@ class JobCard extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
 
-              // Location and Date row
+              // Location, Date, and Source row
               Row(
                 children: [
                   if (job.location != null && job.location!.isNotEmpty) ...[
@@ -126,37 +126,89 @@ class JobCard extends StatelessWidget {
                 ],
               ),
 
-              // Skills chips
-              if (job.skills.isNotEmpty) ...[
-                const SizedBox(height: 10),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 4,
-                  children: job.skills.take(4).map((skill) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF6C63FF).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: const Color(0xFF6C63FF).withValues(alpha: 0.2),
-                        ),
-                      ),
-                      child: Text(
-                        skill,
-                        style: const TextStyle(
-                          color: Color(0xFF6C63FF),
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ],
+              // Skills chips + Source badge row
+              const SizedBox(height: 10),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Skills
+                  Expanded(
+                    child: job.skills.isNotEmpty
+                        ? Wrap(
+                            spacing: 6,
+                            runSpacing: 4,
+                            children: job.skills.take(3).map((skill) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF6C63FF).withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: const Color(0xFF6C63FF).withValues(alpha: 0.2),
+                                  ),
+                                ),
+                                child: Text(
+                                  skill,
+                                  style: const TextStyle(
+                                    color: Color(0xFF6C63FF),
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                  // Source badge
+                  _buildSourceBadge(job.source),
+                ],
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSourceBadge(JobSource source) {
+    String emoji;
+    Color color;
+    switch (source) {
+      case JobSource.extension:
+        emoji = '🧩';
+        color = const Color(0xFF9D4EDD);
+        break;
+      case JobSource.aiExtract:
+        emoji = '✨';
+        color = const Color(0xFFF59E0B);
+        break;
+      case JobSource.manual:
+        emoji = '✏️';
+        color = Colors.white38;
+        break;
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(emoji, style: const TextStyle(fontSize: 10)),
+          const SizedBox(width: 3),
+          Text(
+            source.displayLabel,
+            style: TextStyle(
+              color: color,
+              fontSize: 9,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }

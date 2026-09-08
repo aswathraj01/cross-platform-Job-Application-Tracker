@@ -190,27 +190,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          'My Applications',
-                          style: GoogleFonts.outfit(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'My Applications',
+                              style: GoogleFonts.outfit(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                            if (jobProvider.sourceFilter != null)
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF9D4EDD).withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: const Color(0xFF9D4EDD).withValues(alpha: 0.3)),
+                                ),
+                                child: Text(
+                                  'Filtered by: ${jobProvider.sourceFilter!}',
+                                  style: const TextStyle(color: Color(0xFF9D4EDD), fontSize: 10, fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                       SearchFilterBar(
                         searchQuery: jobProvider.searchQuery,
                         statusFilter: jobProvider.statusFilter,
+                        sourceFilter: jobProvider.sourceFilter,
                         onSearchChanged: jobProvider.setSearchQuery,
                         onStatusChanged: jobProvider.setStatusFilter,
+                        onSourceChanged: jobProvider.setSourceFilter,
                         onClearFilters: jobProvider.clearFilters,
                       ),
                     ],
                   ),
                 ),
 
-                // Job List
+                // Job List — responsive: grid on wide, list on narrow
                 if (jobProvider.isLoading)
                   const SliverFillRemaining(
                     child: Center(
@@ -238,7 +258,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Add your first job application!',
+                            'Use the extension or AI Extract to add jobs!',
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.3),
                               fontSize: 13,
@@ -249,25 +269,61 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   )
                 else
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final job = jobProvider.jobs[index];
-                        return JobCard(
-                          job: job,
-                          onTap: () async {
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => JobDetailScreen(job: job),
-                              ),
-                            );
-                            _loadJobs();
-                          },
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isWide = constraints.maxWidth > 700;
+                      if (isWide) {
+                        return SliverPadding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          sliver: SliverGrid(
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                              childAspectRatio: 1.6,
+                            ),
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                final job = jobProvider.jobs[index];
+                                return JobCard(
+                                  job: job,
+                                  onTap: () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => JobDetailScreen(job: job),
+                                      ),
+                                    );
+                                    _loadJobs();
+                                  },
+                                );
+                              },
+                              childCount: jobProvider.jobs.length,
+                            ),
+                          ),
                         );
-                      },
-                      childCount: jobProvider.jobs.length,
-                    ),
+                      }
+                      return SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final job = jobProvider.jobs[index];
+                            return JobCard(
+                              job: job,
+                              onTap: () async {
+                                await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => JobDetailScreen(job: job),
+                                  ),
+                                );
+                                _loadJobs();
+                              },
+                            );
+                          },
+                          childCount: jobProvider.jobs.length,
+                        ),
+                      );
+                    },
                   ),
 
                 // Bottom padding

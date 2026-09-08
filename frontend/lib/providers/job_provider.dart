@@ -11,8 +11,9 @@ class JobProvider extends ChangeNotifier {
   String? _error;
   String _searchQuery = '';
   String? _statusFilter;
+  String? _sourceFilter;
 
-  List<JobModel> get jobs => _filteredJobs.isNotEmpty || _searchQuery.isNotEmpty || _statusFilter != null
+  List<JobModel> get jobs => _filteredJobs.isNotEmpty || _searchQuery.isNotEmpty || _statusFilter != null || _sourceFilter != null
       ? _filteredJobs
       : _jobs;
   List<JobModel> get allJobs => _jobs;
@@ -20,6 +21,7 @@ class JobProvider extends ChangeNotifier {
   String? get error => _error;
   String get searchQuery => _searchQuery;
   String? get statusFilter => _statusFilter;
+  String? get sourceFilter => _sourceFilter;
 
   // ==================== ANALYTICS ====================
 
@@ -40,6 +42,10 @@ class JobProvider extends ChangeNotifier {
     if (totalJobs == 0) return 0;
     return ((interviewCount + offerCount) / totalJobs) * 100;
   }
+
+  int get extensionCount => _jobs.where((j) => j.source == JobSource.extension).length;
+  int get aiExtractCount => _jobs.where((j) => j.source == JobSource.aiExtract).length;
+  int get manualCount => _jobs.where((j) => j.source == JobSource.manual).length;
 
   Map<String, int> get statusCounts => {
         'Not Applied': notAppliedCount,
@@ -177,19 +183,28 @@ class JobProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Set source filter (extension/ai_extract/manual) and apply filters.
+  void setSourceFilter(String? source) {
+    _sourceFilter = source;
+    _applyFilters();
+    notifyListeners();
+  }
+
   /// Clear all filters.
   void clearFilters() {
     _searchQuery = '';
     _statusFilter = null;
+    _sourceFilter = null;
     _filteredJobs = [];
     notifyListeners();
   }
 
-  /// Apply current search and status filters to the job list.
+  /// Apply current search, status, and source filters to the job list.
   void _applyFilters() {
     _filteredJobs = _jobs.where((job) {
       bool matchesSearch = true;
       bool matchesStatus = true;
+      bool matchesSource = true;
 
       if (_searchQuery.isNotEmpty) {
         final query = _searchQuery.toLowerCase();
@@ -202,7 +217,11 @@ class JobProvider extends ChangeNotifier {
         matchesStatus = job.status.value == _statusFilter;
       }
 
-      return matchesSearch && matchesStatus;
+      if (_sourceFilter != null && _sourceFilter!.isNotEmpty) {
+        matchesSource = job.source.apiValue == _sourceFilter;
+      }
+
+      return matchesSearch && matchesStatus && matchesSource;
     }).toList();
   }
 
