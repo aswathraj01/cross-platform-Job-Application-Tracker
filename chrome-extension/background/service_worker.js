@@ -3,7 +3,7 @@
 // ======================================================
 // Handles: auth token management, badge updates
 
-const API_BASE_DEFAULT = 'http://localhost:8000/api';
+const API_BASE_DEFAULT = 'https://job-tracker-api-i9hd.onrender.com/api';
 
 // Update extension badge when tab changes
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {

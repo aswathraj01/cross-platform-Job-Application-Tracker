@@ -1,8 +1,7 @@
 /// API configuration for connecting to the FastAPI backend.
 class ApiConfig {
-  /// Base URL for the backend API.
-  /// Points to the Render.com cloud deployment.
-  static const String baseUrl = 'https://job-tracker-api-xswf.onrender.com/api';
+  /// Base URL for the backend API — live Render.com cloud deployment.
+  static const String baseUrl = 'https://job-tracker-api-i9hd.onrender.com/api';
 
   // Auth endpoints
   static const String loginUrl = '$baseUrl/auth/login';

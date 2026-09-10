@@ -1,4 +1,4 @@
-const DEFAULT_API_BASE = 'http://localhost:8000/api';
+const DEFAULT_API_BASE = 'https://job-tracker-api-i9hd.onrender.com/api';
 
 async function getStorage(keys) {
   return new Promise(resolve => chrome.storage.local.get(keys, resolve));

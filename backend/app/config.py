@@ -33,6 +33,8 @@ class Settings(BaseSettings):
         # Firebase Hosting
         "https://job-application-tracker-9f4d8.web.app",
         "https://job-application-tracker-9f4d8.firebaseapp.com",
+        # Render.com backend itself (for Swagger UI)
+        "https://job-tracker-api-i9hd.onrender.com",
         # Wildcard for development convenience
         "*",
     ]
