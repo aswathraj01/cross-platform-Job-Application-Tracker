@@ -1,8 +1,8 @@
 /// API configuration for connecting to the FastAPI backend.
 class ApiConfig {
   /// Base URL for the backend API.
-  /// Change this to your deployed backend URL in production.
-  static const String baseUrl = 'http://localhost:8000/api';
+  /// Points to the Render.com cloud deployment.
+  static const String baseUrl = 'https://job-tracker-api-xswf.onrender.com/api';
 
   // Auth endpoints
   static const String loginUrl = '$baseUrl/auth/login';
@@ -13,6 +13,9 @@ class ApiConfig {
 
   // AI endpoints
   static const String aiExtractUrl = '$baseUrl/ai/extract';
+  static const String aiChatUrl = '$baseUrl/ai/chat';
+  static const String aiAnalyzeUrl = '$baseUrl/ai/analyze';
+  static const String aiAdviceUrl = '$baseUrl/ai/advice';
 
   // Extension endpoints
   static const String extensionScrapeUrl = '$baseUrl/extension/scrape';

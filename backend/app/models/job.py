@@ -107,3 +107,52 @@ class ExtensionCaptureRequest(BaseModel):
     notes: Optional[str] = None
     skills: list[str] = Field(default_factory=list)
     domain: Optional[str] = None
+
+
+class AIChatMessage(BaseModel):
+    """A single message in an AI chat conversation."""
+    role: str = Field(..., description="'user' or 'assistant'")
+    content: str = Field(..., description="Message content")
+
+
+class AIChatRequest(BaseModel):
+    """Schema for AI chat request."""
+    message: str = Field(..., min_length=1, max_length=2000, description="User message")
+    history: list[AIChatMessage] = Field(default_factory=list, description="Conversation history")
+    job_context: Optional[str] = Field(None, description="Optional job context (company, role, etc.)")
+
+
+class AIChatResponse(BaseModel):
+    """Schema for AI chat response."""
+    reply: str
+    suggestions: list[str] = []
+
+
+class AIAnalyzeRequest(BaseModel):
+    """Schema for AI job application analysis request."""
+    jobs_summary: str = Field(..., description="JSON summary of user's job applications")
+
+
+class AIAnalyzeResponse(BaseModel):
+    """Schema for AI analysis response."""
+    insights: str
+    tips: list[str] = []
+    strengths: list[str] = []
+    areas_to_improve: list[str] = []
+
+
+class AIAdviceRequest(BaseModel):
+    """Schema for AI advice on a specific job."""
+    company: str
+    role: str
+    status: str
+    skills: list[str] = []
+    notes: Optional[str] = None
+
+
+class AIAdviceResponse(BaseModel):
+    """Schema for AI job advice response."""
+    advice: str
+    next_steps: list[str] = []
+    interview_tips: list[str] = []
+

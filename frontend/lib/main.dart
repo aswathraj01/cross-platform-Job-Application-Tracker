@@ -5,17 +5,9 @@ import 'providers/auth_provider.dart';
 import 'providers/job_provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
-import 'package:flutter/foundation.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize Google Mobile Ads only on mobile platforms
-  if (!kIsWeb) {
-    await MobileAds.instance.initialize();
-  }
-  
   runApp(const JobTrackerApp());
 }
 

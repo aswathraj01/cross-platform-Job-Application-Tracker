@@ -10,6 +10,7 @@ import 'login_screen.dart';
 import 'add_job_screen.dart';
 import 'job_detail_screen.dart';
 import 'ai_extract_screen.dart';
+import 'ai_chat_screen.dart';
 import '../widgets/ad_banner.dart';
 
 /// Dashboard screen showing analytics and job list.
@@ -61,6 +62,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         actions: [
+          // AI Chat (JobBot) button
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AiChatScreen()),
+              );
+            },
+            icon: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF10B981), Color(0xFF059669)],
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.smart_toy, color: Colors.white, size: 18),
+            ),
+            tooltip: 'AI Job Coach',
+          ),
           // AI Extract button
           IconButton(
             onPressed: () async {
