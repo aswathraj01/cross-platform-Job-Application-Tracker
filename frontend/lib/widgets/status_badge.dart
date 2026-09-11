@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/job_model.dart';
+import '../config/liquid_glass_theme.dart';
 
-/// Color-coded status badge widget.
+/// Liquid Glass status badge with coloured glow border.
 class StatusBadge extends StatelessWidget {
   final JobStatus status;
   final double fontSize;
@@ -14,31 +15,21 @@ class StatusBadge extends StatelessWidget {
 
   Color _getColor() {
     switch (status) {
-      case JobStatus.notApplied:
-        return const Color(0xFF6B7280);
-      case JobStatus.applied:
-        return const Color(0xFF3B82F6);
-      case JobStatus.interview:
-        return const Color(0xFFF59E0B);
-      case JobStatus.rejected:
-        return const Color(0xFFEF4444);
-      case JobStatus.offer:
-        return const Color(0xFF10B981);
+      case JobStatus.notApplied: return const Color(0xFF94A3B8);
+      case JobStatus.applied:    return LiquidGlass.accentBlue;
+      case JobStatus.interview:  return LiquidGlass.accentAmber;
+      case JobStatus.rejected:   return LiquidGlass.accentRed;
+      case JobStatus.offer:      return LiquidGlass.accentGreen;
     }
   }
 
   IconData _getIcon() {
     switch (status) {
-      case JobStatus.notApplied:
-        return Icons.schedule;
-      case JobStatus.applied:
-        return Icons.send;
-      case JobStatus.interview:
-        return Icons.people;
-      case JobStatus.rejected:
-        return Icons.close;
-      case JobStatus.offer:
-        return Icons.celebration;
+      case JobStatus.notApplied: return Icons.schedule;
+      case JobStatus.applied:    return Icons.send;
+      case JobStatus.interview:  return Icons.people;
+      case JobStatus.rejected:   return Icons.close;
+      case JobStatus.offer:      return Icons.celebration;
     }
   }
 
@@ -48,9 +39,16 @@ class StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.20),
+            blurRadius: 10,
+            spreadRadius: -2,
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -63,6 +61,7 @@ class StatusBadge extends StatelessWidget {
               color: color,
               fontSize: fontSize,
               fontWeight: FontWeight.w600,
+              letterSpacing: 0.1,
             ),
           ),
         ],

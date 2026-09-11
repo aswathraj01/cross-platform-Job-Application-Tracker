@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import '../config/liquid_glass_theme.dart';
 
 /// Pie chart widget for displaying job status analytics.
 class AnalyticsChart extends StatelessWidget {
@@ -11,11 +12,11 @@ class AnalyticsChart extends StatelessWidget {
   });
 
   static const Map<String, Color> _statusColors = {
-    'Not Applied': Color(0xFF6B7280),
-    'Applied': Color(0xFF3B82F6),
-    'Interview': Color(0xFFF59E0B),
-    'Rejected': Color(0xFFEF4444),
-    'Offer': Color(0xFF10B981),
+    'Not Applied': Color(0xFF94A3B8),
+    'Applied':     LiquidGlass.accentBlue,
+    'Interview':   LiquidGlass.accentAmber,
+    'Rejected':    LiquidGlass.accentRed,
+    'Offer':       LiquidGlass.accentGreen,
   };
 
   @override
@@ -24,22 +25,22 @@ class AnalyticsChart extends StatelessWidget {
 
     if (total == 0) {
       return Container(
-        height: 200,
+        height: 180,
         alignment: Alignment.center,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.pie_chart_outline,
-              size: 48,
-              color: Colors.white.withValues(alpha: 0.2),
+              size: 44,
+              color: Colors.white.withValues(alpha: 0.18),
             ),
             const SizedBox(height: 8),
             Text(
               'No applications yet',
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.4),
-                fontSize: 14,
+                color: Colors.white.withValues(alpha: 0.35),
+                fontSize: 13,
               ),
             ),
           ],
@@ -56,13 +57,17 @@ class AnalyticsChart extends StatelessWidget {
         color: color,
         value: entry.value.toDouble(),
         title: '$percentage%',
-        radius: 50,
+        radius: 52,
         titleStyle: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
           color: Colors.white,
         ),
         titlePositionPercentageOffset: 0.6,
+        borderSide: BorderSide(
+          color: Colors.white.withValues(alpha: 0.08),
+          width: 1,
+        ),
       );
     }).toList();
 
@@ -73,14 +78,14 @@ class AnalyticsChart extends StatelessWidget {
           child: PieChart(
             PieChartData(
               sections: sections,
-              centerSpaceRadius: 35,
+              centerSpaceRadius: 38,
               sectionsSpace: 2,
               startDegreeOffset: -90,
+              pieTouchData: PieTouchData(enabled: false),
             ),
           ),
         ),
-        const SizedBox(height: 12),
-        // Legend
+        const SizedBox(height: 14),
         Wrap(
           spacing: 16,
           runSpacing: 8,
@@ -93,19 +98,26 @@ class AnalyticsChart extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 10,
-                  height: 10,
+                  width: 8, height: 8,
                   decoration: BoxDecoration(
                     color: color,
-                    borderRadius: BorderRadius.circular(3),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: color.withValues(alpha: 0.5),
+                        blurRadius: 6,
+                        spreadRadius: 1,
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: 5),
                 Text(
                   '${entry.key} (${entry.value})',
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.7),
+                    color: Colors.white.withValues(alpha: 0.65),
                     fontSize: 11,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],

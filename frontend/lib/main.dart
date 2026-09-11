@@ -5,6 +5,7 @@ import 'providers/auth_provider.dart';
 import 'providers/job_provider.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
+import 'config/liquid_glass_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,42 +28,71 @@ class JobTrackerApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
           brightness: Brightness.dark,
-          scaffoldBackgroundColor: const Color(0xFF0F0F23),
-          primaryColor: const Color(0xFF6C63FF),
-          colorScheme: const ColorScheme.dark(
-            primary: Color(0xFF6C63FF),
-            secondary: Color(0xFF9D4EDD),
-            surface: Color(0xFF16213E),
-            error: Color(0xFFEF4444),
+          scaffoldBackgroundColor: LiquidGlass.bgDeep,
+          primaryColor: LiquidGlass.accentPrimary,
+          colorScheme: ColorScheme.dark(
+            primary: LiquidGlass.accentPrimary,
+            secondary: LiquidGlass.accentSecond,
+            surface: LiquidGlass.bgSurface,
+            error: LiquidGlass.accentRed,
+            onSurface: Colors.white,
           ),
-          textTheme: GoogleFonts.interTextTheme(
+          textTheme: GoogleFonts.outfitTextTheme(
             ThemeData.dark().textTheme,
           ),
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: false,
+            iconTheme: IconThemeData(color: Colors.white),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF6C63FF),
+              backgroundColor: LiquidGlass.accentPrimary,
               foregroundColor: Colors.white,
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 14),
+              padding: const EdgeInsets.symmetric(vertical: 15),
             ),
           ),
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            backgroundColor: Color(0xFF6C63FF),
+            backgroundColor: LiquidGlass.accentPrimary,
             foregroundColor: Colors.white,
           ),
           snackBarTheme: SnackBarThemeData(
             behavior: SnackBarBehavior.floating,
+            backgroundColor: LiquidGlass.bgSurface,
+            contentTextStyle: const TextStyle(color: Colors.white),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
             ),
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: Colors.white.withValues(alpha: 0.06),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.10)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: LiquidGlass.accentPrimary, width: 1.5),
+            ),
+            hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.3)),
+          ),
+          chipTheme: ChipThemeData(
+            backgroundColor: Colors.white.withValues(alpha: 0.06),
+            selectedColor: LiquidGlass.accentPrimary.withValues(alpha: 0.3),
+            labelStyle: const TextStyle(color: Colors.white, fontSize: 12),
+            side: BorderSide(color: Colors.white.withValues(alpha: 0.12)),
+            shape: const StadiumBorder(),
           ),
         ),
         home: const AuthWrapper(),
@@ -99,25 +129,36 @@ class _AuthWrapperState extends State<AuthWrapper> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: const Color(0xFF0F0F23),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF6C63FF), Color(0xFF9D4EDD)],
+        backgroundColor: LiquidGlass.bgDeep,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [LiquidGlass.bgDeep, LiquidGlass.bgMid],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    gradient: LiquidGlass.primaryGradient,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: LiquidGlass.glowShadow(LiquidGlass.accentPrimary, intensity: 0.5, blur: 28),
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  child: const Icon(Icons.work_outline, color: Colors.white, size: 34),
                 ),
-                child: const Icon(Icons.work_outline, color: Colors.white, size: 30),
-              ),
-              const SizedBox(height: 20),
-              const CircularProgressIndicator(color: Color(0xFF6C63FF)),
-            ],
+                const SizedBox(height: 28),
+                CircularProgressIndicator(
+                  color: LiquidGlass.accentPrimary,
+                  strokeWidth: 2,
+                ),
+              ],
+            ),
           ),
         ),
       );

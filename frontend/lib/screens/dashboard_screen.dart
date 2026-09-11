@@ -1,19 +1,23 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../providers/auth_provider.dart';
 import '../providers/job_provider.dart';
+import '../config/liquid_glass_theme.dart';
 import '../widgets/job_card.dart';
 import '../widgets/analytics_chart.dart';
 import '../widgets/search_filter_bar.dart';
+import '../widgets/animated_orb_background.dart';
+import '../widgets/glass_container.dart';
+import '../widgets/ad_banner.dart';
 import 'login_screen.dart';
 import 'add_job_screen.dart';
 import 'job_detail_screen.dart';
 import 'ai_extract_screen.dart';
 import 'ai_chat_screen.dart';
-import '../widgets/ad_banner.dart';
 
-/// Dashboard screen showing analytics and job list.
+/// Dashboard screen with Apple Liquid Glass design.
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -22,12 +26,24 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  final ScrollController _scrollController = ScrollController();
+  double _scrollOffset = 0;
+
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(() {
+      setState(() => _scrollOffset = _scrollController.offset);
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadJobs();
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void _loadJobs() {
@@ -48,261 +64,354 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appBarOpacity = (_scrollOffset / 80).clamp(0.0, 1.0);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0F0F23),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          'Dashboard',
-          style: GoogleFonts.outfit(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+      backgroundColor: LiquidGlass.bgDeep,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(64),
+        child: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: appBarOpacity * 20,
+              sigmaY: appBarOpacity * 20,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: LiquidGlass.bgDeep.withValues(alpha: appBarOpacity * 0.8),
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.white.withValues(alpha: appBarOpacity * 0.08),
+                  ),
+                ),
+              ),
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Row(
+                    children: [
+                      // Logo
+                      Container(
+                        width: 36, height: 36,
+                        decoration: BoxDecoration(
+                          gradient: LiquidGlass.primaryGradient,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: LiquidGlass.glowShadow(LiquidGlass.accentPrimary, intensity: 0.4, blur: 14),
+                        ),
+                        child: const Icon(Icons.work_outline, color: Colors.white, size: 18),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Dashboard',
+                        style: GoogleFonts.outfit(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      const Spacer(),
+                      // AI Chat button
+                      _buildAppBarAction(
+                        icon: Icons.smart_toy,
+                        gradient: const LinearGradient(colors: [Color(0xFF10B981), Color(0xFF059669)]),
+                        tooltip: 'AI Job Coach',
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const AiChatScreen()),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // AI Extract button
+                      _buildAppBarAction(
+                        icon: Icons.auto_awesome,
+                        gradient: LiquidGlass.primaryGradient,
+                        tooltip: 'AI Extract',
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const AiExtractScreen()),
+                          );
+                          _loadJobs();
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      // Logout
+                      GestureDetector(
+                        onTap: _logout,
+                        child: Container(
+                          width: 36, height: 36,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.07),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                          ),
+                          child: Icon(Icons.logout, color: Colors.white.withValues(alpha: 0.6), size: 18),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
-        actions: [
-          // AI Chat (JobBot) button
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AiChatScreen()),
-              );
-            },
-            icon: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF10B981), Color(0xFF059669)],
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.smart_toy, color: Colors.white, size: 18),
-            ),
-            tooltip: 'AI Job Coach',
-          ),
-          // AI Extract button
-          IconButton(
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AiExtractScreen()),
-              );
-              _loadJobs();
-            },
-            icon: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF6C63FF), Color(0xFF9D4EDD)],
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.auto_awesome, color: Colors.white, size: 18),
-            ),
-            tooltip: 'AI Extract',
-          ),
-          IconButton(
-            onPressed: _logout,
-            icon: Icon(Icons.logout, color: Colors.white.withValues(alpha: 0.7)),
-            tooltip: 'Logout',
-          ),
-        ],
       ),
-      body: Consumer<JobProvider>(
-        builder: (ctx, jobProvider, _) {
-          return RefreshIndicator(
-            onRefresh: () async => _loadJobs(),
-            color: const Color(0xFF6C63FF),
-            backgroundColor: const Color(0xFF16213E),
-            child: CustomScrollView(
-              slivers: [
-                // Analytics Section
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Stats Cards Row
-                        _buildStatsRow(jobProvider),
-                        const SizedBox(height: 16),
+      body: Stack(
+        children: [
+          // ── Orb background ──
+          const Positioned.fill(child: AnimatedOrbBackground()),
 
-                        // Chart Card
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF16213E).withValues(alpha: 0.6),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Application Overview',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              AnalyticsChart(statusCounts: jobProvider.statusCounts),
-                            ],
-                          ),
-                        ),
+          // ── Main content ──
+          Consumer<JobProvider>(
+            builder: (ctx, jobProvider, _) {
+              return RefreshIndicator(
+                onRefresh: () async => _loadJobs(),
+                color: LiquidGlass.accentPrimary,
+                backgroundColor: LiquidGlass.bgSurface,
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    // top padding for app bar
+                    const SliverToBoxAdapter(child: SizedBox(height: 80)),
 
-                        const SizedBox(height: 8),
+                    // ── Analytics Section ──
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Stats Row
+                            _buildStatsRow(jobProvider),
+                            const SizedBox(height: 14),
 
-                        // Success rate card
-                        if (jobProvider.totalJobs > 0)
-                          Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  const Color(0xFF6C63FF).withValues(alpha: 0.2),
-                                  const Color(0xFF9D4EDD).withValues(alpha: 0.1),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: const Color(0xFF6C63FF).withValues(alpha: 0.2)),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.trending_up, color: Color(0xFF6C63FF), size: 24),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                            // Chart Card
+                            GlassContainer(
+                              borderRadius: 20,
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
                                     children: [
-                                      Text(
-                                        'Interview Rate: ${jobProvider.interviewRate.toStringAsFixed(1)}%',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
+                                      Container(
+                                        width: 6, height: 20,
+                                        decoration: BoxDecoration(
+                                          gradient: LiquidGlass.primaryGradient,
+                                          borderRadius: BorderRadius.circular(3),
                                         ),
                                       ),
+                                      const SizedBox(width: 10),
                                       Text(
-                                        'Offer Rate: ${jobProvider.successRate.toStringAsFixed(1)}%',
-                                        style: TextStyle(
-                                          color: Colors.white.withValues(alpha: 0.6),
-                                          fontSize: 12,
+                                        'Application Overview',
+                                        style: GoogleFonts.outfit(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Search & Filter
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'My Applications',
-                              style: GoogleFonts.outfit(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
+                                  const SizedBox(height: 16),
+                                  AnalyticsChart(statusCounts: jobProvider.statusCounts),
+                                ],
                               ),
                             ),
-                            if (jobProvider.sourceFilter != null)
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF9D4EDD).withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: const Color(0xFF9D4EDD).withValues(alpha: 0.3)),
-                                ),
-                                child: Text(
-                                  'Filtered by: ${jobProvider.sourceFilter!}',
-                                  style: const TextStyle(color: Color(0xFF9D4EDD), fontSize: 10, fontWeight: FontWeight.w600),
+
+                            const SizedBox(height: 12),
+
+                            // Success rate card
+                            if (jobProvider.totalJobs > 0)
+                              GlassContainer(
+                                borderRadius: 16,
+                                padding: const EdgeInsets.all(16),
+                                fillColor: LiquidGlass.accentPrimary.withValues(alpha: 0.08),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        gradient: LiquidGlass.primaryGradient,
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: LiquidGlass.glowShadow(LiquidGlass.accentPrimary, blur: 14),
+                                      ),
+                                      child: const Icon(Icons.trending_up, color: Colors.white, size: 18),
+                                    ),
+                                    const SizedBox(width: 14),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Interview Rate: ${jobProvider.interviewRate.toStringAsFixed(1)}%',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Offer Rate: ${jobProvider.successRate.toStringAsFixed(1)}%',
+                                            style: TextStyle(
+                                              color: Colors.white.withValues(alpha: 0.55),
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    ShaderMask(
+                                      shaderCallback: (b) => LiquidGlass.primaryGradient.createShader(b),
+                                      child: Text(
+                                        '${jobProvider.interviewRate.toStringAsFixed(0)}%',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                           ],
                         ),
                       ),
-                      SearchFilterBar(
-                        searchQuery: jobProvider.searchQuery,
-                        statusFilter: jobProvider.statusFilter,
-                        sourceFilter: jobProvider.sourceFilter,
-                        onSearchChanged: jobProvider.setSearchQuery,
-                        onStatusChanged: jobProvider.setStatusFilter,
-                        onSourceChanged: jobProvider.setSourceFilter,
-                        onClearFilters: jobProvider.clearFilters,
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Job List — responsive: grid on wide, list on narrow
-                if (jobProvider.isLoading)
-                  const SliverFillRemaining(
-                    child: Center(
-                      child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
                     ),
-                  )
-                else if (jobProvider.jobs.isEmpty)
-                  SliverFillRemaining(
-                    child: Center(
+
+                    // ── Search & Filter header ──
+                    SliverToBoxAdapter(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            Icons.work_off_outlined,
-                            size: 64,
-                            color: Colors.white.withValues(alpha: 0.2),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'No jobs tracked yet',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.4),
-                              fontSize: 16,
+                          const SizedBox(height: 20),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'My Applications',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    letterSpacing: -0.2,
+                                  ),
+                                ),
+                                if (jobProvider.sourceFilter != null)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: LiquidGlass.accentSecond.withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(color: LiquidGlass.accentSecond.withValues(alpha: 0.3)),
+                                    ),
+                                    child: Text(
+                                      'Filtered by: ${jobProvider.sourceFilter!}',
+                                      style: TextStyle(color: LiquidGlass.accentSecond, fontSize: 10, fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Use the extension or AI Extract to add jobs!',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              fontSize: 13,
-                            ),
+                          SearchFilterBar(
+                            searchQuery: jobProvider.searchQuery,
+                            statusFilter: jobProvider.statusFilter,
+                            sourceFilter: jobProvider.sourceFilter,
+                            onSearchChanged: jobProvider.setSearchQuery,
+                            onStatusChanged: jobProvider.setStatusFilter,
+                            onSourceChanged: jobProvider.setSourceFilter,
+                            onClearFilters: jobProvider.clearFilters,
                           ),
                         ],
                       ),
                     ),
-                  )
-                else
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      final isWide = constraints.maxWidth > 700;
-                      if (isWide) {
-                        return SliverPadding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          sliver: SliverGrid(
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                              childAspectRatio: 1.6,
-                            ),
+
+                    // ── Job List ──
+                    if (jobProvider.isLoading)
+                      const SliverFillRemaining(
+                        child: Center(
+                          child: CircularProgressIndicator(color: LiquidGlass.accentPrimary),
+                        ),
+                      )
+                    else if (jobProvider.jobs.isEmpty)
+                      SliverFillRemaining(
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 80, height: 80,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white.withValues(alpha: 0.05),
+                                  border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                                ),
+                                child: Icon(
+                                  Icons.work_off_outlined,
+                                  size: 36,
+                                  color: Colors.white.withValues(alpha: 0.25),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                'No jobs tracked yet',
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.45),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Use the extension or AI Extract to add jobs!',
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    else
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final isWide = constraints.maxWidth > 700;
+                          if (isWide) {
+                            return SliverPadding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              sliver: SliverGrid(
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 12,
+                                  childAspectRatio: 1.6,
+                                ),
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                    final job = jobProvider.jobs[index];
+                                    return JobCard(
+                                      job: job,
+                                      onTap: () async {
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (_) => JobDetailScreen(job: job)),
+                                        );
+                                        _loadJobs();
+                                      },
+                                    );
+                                  },
+                                  childCount: jobProvider.jobs.length,
+                                ),
+                              ),
+                            );
+                          }
+                          return SliverList(
                             delegate: SliverChildBuilderDelegate(
                               (context, index) {
                                 final job = jobProvider.jobs[index];
@@ -311,9 +420,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   onTap: () async {
                                     await Navigator.push(
                                       context,
-                                      MaterialPageRoute(
-                                        builder: (_) => JobDetailScreen(job: job),
-                                      ),
+                                      MaterialPageRoute(builder: (_) => JobDetailScreen(job: job)),
                                     );
                                     _loadJobs();
                                   },
@@ -321,121 +428,134 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               },
                               childCount: jobProvider.jobs.length,
                             ),
-                          ),
-                        );
-                      }
-                      return SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            final job = jobProvider.jobs[index];
-                            return JobCard(
-                              job: job,
-                              onTap: () async {
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => JobDetailScreen(job: job),
-                                  ),
-                                );
-                                _loadJobs();
-                              },
-                            );
-                          },
-                          childCount: jobProvider.jobs.length,
-                        ),
-                      );
-                    },
-                  ),
+                          );
+                        },
+                      ),
 
-                // Bottom padding
-                const SliverToBoxAdapter(child: SizedBox(height: 80)),
-              ],
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const AddJobScreen()),
-          );
-          _loadJobs();
-        },
-        backgroundColor: const Color(0xFF6C63FF),
-        icon: const Icon(Icons.add, color: Colors.white),
-        label: Text(
-          'Add Job',
-          style: GoogleFonts.inter(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
+                    const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                  ],
+                ),
+              );
+            },
           ),
+        ],
+      ),
+      floatingActionButton: _buildGlowingFAB(),
+      bottomNavigationBar: const AdBannerWidget(),
+    );
+  }
+
+  Widget _buildAppBarAction({
+    required IconData icon,
+    required LinearGradient gradient,
+    required String tooltip,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Tooltip(
+        message: tooltip,
+        child: Container(
+          width: 36, height: 36,
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: Colors.white, size: 18),
         ),
       ),
-      bottomNavigationBar: const AdBannerWidget(),
+    );
+  }
+
+  Widget _buildGlowingFAB() {
+    return GestureDetector(
+      onTap: () async {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const AddJobScreen()),
+        );
+        _loadJobs();
+      },
+      child: Container(
+        height: 52,
+        padding: const EdgeInsets.symmetric(horizontal: 22),
+        decoration: BoxDecoration(
+          gradient: LiquidGlass.primaryGradient,
+          borderRadius: BorderRadius.circular(26),
+          boxShadow: LiquidGlass.glowShadow(LiquidGlass.accentPrimary, intensity: 0.55, blur: 28),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.add, color: Colors.white, size: 20),
+            const SizedBox(width: 8),
+            Text(
+              'Add Job',
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildStatsRow(JobProvider provider) {
     return Row(
       children: [
-        _buildStatCard(
-          'Total',
-          provider.totalJobs.toString(),
-          Icons.dashboard,
-          const Color(0xFF6C63FF),
-        ),
+        _buildStatCard('Total',     provider.totalJobs.toString(),     Icons.dashboard,   LiquidGlass.accentPrimary),
         const SizedBox(width: 8),
-        _buildStatCard(
-          'Applied',
-          provider.appliedCount.toString(),
-          Icons.send,
-          const Color(0xFF3B82F6),
-        ),
+        _buildStatCard('Applied',   provider.appliedCount.toString(),   Icons.send,        LiquidGlass.accentBlue),
         const SizedBox(width: 8),
-        _buildStatCard(
-          'Interview',
-          provider.interviewCount.toString(),
-          Icons.people,
-          const Color(0xFFF59E0B),
-        ),
+        _buildStatCard('Interview', provider.interviewCount.toString(), Icons.people,      LiquidGlass.accentAmber),
         const SizedBox(width: 8),
-        _buildStatCard(
-          'Offers',
-          provider.offerCount.toString(),
-          Icons.celebration,
-          const Color(0xFF10B981),
-        ),
+        _buildStatCard('Offers',    provider.offerCount.toString(),     Icons.celebration, LiquidGlass.accentGreen),
       ],
     );
   }
 
   Widget _buildStatCard(String label, String value, IconData icon, Color color) {
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
+      child: GlassContainer(
+        borderRadius: 16,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+        fillColor: color.withValues(alpha: 0.08),
+        shadows: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.18),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
         child: Column(
           children: [
-            Icon(icon, color: color, size: 20),
-            const SizedBox(height: 6),
+            Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(9),
+              ),
+              child: Icon(icon, color: color, size: 16),
+            ),
+            const SizedBox(height: 8),
             Text(
               value,
               style: TextStyle(
                 color: color,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.5,
               ),
             ),
             Text(
               label,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.5),
-                fontSize: 11,
+                color: Colors.white.withValues(alpha: 0.45),
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],
