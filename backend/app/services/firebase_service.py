@@ -32,10 +32,16 @@ def get_firebase_app():
                 # Strip whitespace first — some platforms (e.g. Render) wrap long env vars.
                 clean_b64 = settings.FIREBASE_CREDENTIALS_BASE64.strip()
                 json_bytes = base64.b64decode(clean_b64)
-                service_account_info = json.loads(json_bytes)
-                # Ensure the private_key has real newlines (not escaped \n)
+                service_account_info = json.loads(json_bytes.strip())
+                # Ensure the private_key has real newlines (not escaped \n sequences).
+                # Some env var UIs store \n as a literal backslash-n.
                 if 'private_key' in service_account_info:
-                    service_account_info['private_key'] = service_account_info['private_key'].replace('\\n', '\n')
+                    key = service_account_info['private_key']
+                    key = key.replace('\\n', '\n')
+                    key = key.strip()
+                    if not key.endswith('\n'):
+                        key += '\n'
+                    service_account_info['private_key'] = key
                 cred = credentials.Certificate(service_account_info)
                 print("Firebase initialised from FIREBASE_CREDENTIALS_BASE64 env var.")
             else:
