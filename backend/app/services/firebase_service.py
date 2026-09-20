@@ -28,9 +28,14 @@ def get_firebase_app():
     if _firebase_app is None:
         try:
             if settings.FIREBASE_CREDENTIALS_BASE64:
-                # Production: decode the base64 env var into a dict and use it directly
-                json_bytes = base64.b64decode(settings.FIREBASE_CREDENTIALS_BASE64)
+                # Production: decode the base64 env var into a dict and use it directly.
+                # Strip whitespace first — some platforms (e.g. Render) wrap long env vars.
+                clean_b64 = settings.FIREBASE_CREDENTIALS_BASE64.strip()
+                json_bytes = base64.b64decode(clean_b64)
                 service_account_info = json.loads(json_bytes)
+                # Ensure the private_key has real newlines (not escaped \n)
+                if 'private_key' in service_account_info:
+                    service_account_info['private_key'] = service_account_info['private_key'].replace('\\n', '\n')
                 cred = credentials.Certificate(service_account_info)
                 print("Firebase initialised from FIREBASE_CREDENTIALS_BASE64 env var.")
             else:
