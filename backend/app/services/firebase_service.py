@@ -1,3 +1,4 @@
+import base64
 import firebase_admin
 from firebase_admin import credentials, auth, firestore
 from datetime import datetime
@@ -14,11 +15,28 @@ _db = None
 
 
 def get_firebase_app():
-    """Initialize and return the Firebase app instance."""
+    """Initialize and return the Firebase app instance.
+
+    Credential resolution order:
+    1. FIREBASE_CREDENTIALS_BASE64 env var — base64-encoded JSON of the service account
+       key. This is the recommended approach for production deployments (e.g. Render.com)
+       where the serviceAccountKey.json file cannot be committed to the repository.
+    2. FIREBASE_CREDENTIALS_PATH — path to the serviceAccountKey.json file, used for
+       local development (defaults to 'serviceAccountKey.json').
+    """
     global _firebase_app
     if _firebase_app is None:
         try:
-            cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS_PATH)
+            if settings.FIREBASE_CREDENTIALS_BASE64:
+                # Production: decode the base64 env var into a dict and use it directly
+                json_bytes = base64.b64decode(settings.FIREBASE_CREDENTIALS_BASE64)
+                service_account_info = json.loads(json_bytes)
+                cred = credentials.Certificate(service_account_info)
+                print("Firebase initialised from FIREBASE_CREDENTIALS_BASE64 env var.")
+            else:
+                # Local development: load from the JSON file
+                cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS_PATH)
+                print(f"Firebase initialised from file: {settings.FIREBASE_CREDENTIALS_PATH}")
             _firebase_app = firebase_admin.initialize_app(cred)
         except Exception as e:
             print(f"Firebase initialization error: {e}")
@@ -59,13 +77,14 @@ def create_user(email: str, password: str) -> dict:
         "uid": data["localId"],
         "email": data.get("email", email),
         "token": data["idToken"],
+        "refresh_token": data.get("refreshToken", ""),
     }
 
 
 def verify_password(email: str, password: str) -> dict:
     """
     Verify user credentials using Firebase Auth REST API.
-    Returns user data with ID token.
+    Returns user data with ID token and refresh token.
     """
     url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={settings.FIREBASE_API_KEY}"
     payload = {
@@ -85,6 +104,32 @@ def verify_password(email: str, password: str) -> dict:
         "uid": data["localId"],
         "email": data["email"],
         "token": data["idToken"],
+        "refresh_token": data.get("refreshToken", ""),
+    }
+
+
+def refresh_id_token(refresh_token: str) -> dict:
+    """
+    Exchange a Firebase refresh token for a new ID token.
+    Returns new token data.
+    """
+    url = f"https://securetoken.googleapis.com/v1/token?key={settings.FIREBASE_API_KEY}"
+    payload = {
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token,
+    }
+    response = requests.post(url, json=payload)
+
+    if response.status_code != 200:
+        error_data = response.json()
+        error_message = error_data.get("error", {}).get("message", "Token refresh failed")
+        raise ValueError(f"Token refresh failed: {error_message}")
+
+    data = response.json()
+    return {
+        "token": data["id_token"],
+        "refresh_token": data["refresh_token"],
+        "uid": data["user_id"],
     }
 
 

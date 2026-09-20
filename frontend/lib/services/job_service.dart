@@ -39,7 +39,7 @@ class JobService {
   Future<JobModel> createJob(JobModel job) async {
     final response = await http
         .post(
-          Uri.parse('${ApiConfig.jobsUrl}/'),
+          Uri.parse(ApiConfig.jobsUrl),
           headers: _headers,
           body: jsonEncode(job.toJson()),
         )

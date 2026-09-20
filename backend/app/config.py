@@ -18,6 +18,7 @@ class Settings(BaseSettings):
 
     # Firebase Configuration
     FIREBASE_CREDENTIALS_PATH: str = "serviceAccountKey.json"
+    FIREBASE_CREDENTIALS_BASE64: str = ""  # Base64-encoded service account JSON (for production)
     FIREBASE_API_KEY: str = ""
 
     # Server Configuration
