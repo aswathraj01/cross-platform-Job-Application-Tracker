@@ -5,6 +5,7 @@ import '../providers/auth_provider.dart';
 import '../config/liquid_glass_theme.dart';
 import '../widgets/animated_orb_background.dart';
 import '../widgets/glass_container.dart';
+import '../utils/page_transitions.dart';
 import 'dashboard_screen.dart';
 
 /// Signup screen — mirrors login's Liquid Glass design.
@@ -64,7 +65,7 @@ class _SignupScreenState extends State<SignupScreen>
     if (success && mounted) {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const DashboardScreen()),
+        AppRoutes.fadeSlide(const DashboardScreen()),
         (route) => false,
       );
     }

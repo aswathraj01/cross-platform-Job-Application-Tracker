@@ -20,7 +20,14 @@ class JobTrackerApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => JobProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, JobProvider>(
+          create: (_) => JobProvider(),
+          update: (_, auth, prev) {
+            final provider = prev ?? JobProvider();
+            provider.setAuthProvider(auth);
+            return provider;
+          },
+        ),
       ],
       child: MaterialApp(
         title: 'Job Application Tracker',
@@ -150,7 +157,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: LiquidGlass.glowShadow(LiquidGlass.accentPrimary, intensity: 0.5, blur: 28),
                   ),
-                  child: const Icon(Icons.work_outline, color: Colors.white, size: 34),
+                  child: const Icon(Icons.work_rounded, color: Colors.white, size: 36),
                 ),
                 const SizedBox(height: 28),
                 CircularProgressIndicator(

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
-from app.models.user import UserSignup, UserLogin, UserResponse
-from app.services.firebase_service import create_user, verify_password
+from app.models.user import UserSignup, UserLogin, UserResponse, TokenRefreshRequest
+from app.services.firebase_service import create_user, verify_password, refresh_id_token
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -48,4 +48,28 @@ async def login(user: UserLogin):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Login failed: {str(e)}",
+        )
+
+
+@router.post("/refresh", response_model=UserResponse)
+async def refresh_token(body: TokenRefreshRequest):
+    """Exchange a Firebase refresh token for a new ID token (no password needed)."""
+    try:
+        result = refresh_id_token(body.refresh_token)
+        return UserResponse(
+            uid=result["uid"],
+            email="",          # caller already has this stored
+            token=result["token"],
+            refresh_token=result["refresh_token"],
+            message="Token refreshed",
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(e),
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Token refresh failed: {str(e)}",
         )

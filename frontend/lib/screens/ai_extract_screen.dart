@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/job_model.dart';
 import '../providers/auth_provider.dart';
 import '../providers/job_provider.dart';
+import '../utils/page_transitions.dart';
 import 'add_job_screen.dart';
 
 /// AI-powered job extraction screen.
@@ -75,13 +76,11 @@ class _AiExtractScreenState extends State<AiExtractScreen>
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => AddJobScreen(
-          prefillData: _extractedData,
-          initialStatus: hasApplied ? JobStatus.applied : JobStatus.notApplied,
-          source: JobSource.aiExtract,
-        ),
-      ),
+      AppRoutes.slideUp(AddJobScreen(
+        prefillData: _extractedData,
+        initialStatus: hasApplied ? JobStatus.applied : JobStatus.notApplied,
+        source: JobSource.aiExtract,
+      )),
     );
   }
 

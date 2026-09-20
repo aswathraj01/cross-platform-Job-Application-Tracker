@@ -5,6 +5,7 @@ import '../providers/auth_provider.dart';
 import '../config/liquid_glass_theme.dart';
 import '../widgets/animated_orb_background.dart';
 import '../widgets/glass_container.dart';
+import '../utils/page_transitions.dart';
 import 'signup_screen.dart';
 import 'dashboard_screen.dart';
 
@@ -62,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen>
     if (success && mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const DashboardScreen()),
+        AppRoutes.fadeSlide(const DashboardScreen()),
       );
     }
   }
@@ -229,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen>
                                 context.read<AuthProvider>().clearError();
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (_) => const SignupScreen()),
+                                  AppRoutes.slideHorizontal(const SignupScreen()),
                                 );
                               },
                               child: ShaderMask(

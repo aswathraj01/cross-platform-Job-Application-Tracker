@@ -40,4 +40,32 @@ class AuthService {
       throw Exception(error['detail'] ?? 'Signup failed');
     }
   }
+
+  /// Silently refresh the ID token using a stored refresh token.
+  /// Returns a new [UserModel] with updated tokens. Throws on failure.
+  Future<UserModel> refreshToken(UserModel currentUser) async {
+    if (currentUser.refreshToken.isEmpty) {
+      throw Exception('No refresh token available — please log in again');
+    }
+
+    final response = await http
+        .post(
+          Uri.parse(ApiConfig.refreshUrl),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'refresh_token': currentUser.refreshToken}),
+        )
+        .timeout(Duration(seconds: ApiConfig.timeoutSeconds));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      // Merge new tokens into existing user (email stays the same)
+      return currentUser.copyWith(
+        token: data['token'] ?? '',
+        refreshToken: data['refresh_token'] ?? currentUser.refreshToken,
+      );
+    } else {
+      final error = jsonDecode(response.body);
+      throw Exception(error['detail'] ?? 'Token refresh failed');
+    }
+  }
 }

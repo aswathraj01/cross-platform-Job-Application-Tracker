@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../providers/auth_provider.dart';
 import '../providers/job_provider.dart';
 import '../config/liquid_glass_theme.dart';
+import '../utils/page_transitions.dart';
 import '../widgets/job_card.dart';
 import '../widgets/analytics_chart.dart';
 import '../widgets/search_filter_bar.dart';
@@ -56,7 +57,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (mounted) {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        AppRoutes.fadeSlide(const LoginScreen()),
         (route) => false,
       );
     }
@@ -120,7 +121,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         tooltip: 'AI Job Coach',
                         onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const AiChatScreen()),
+                          AppRoutes.slideUp(const AiChatScreen()),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -132,7 +133,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         onTap: () async {
                           await Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => const AiExtractScreen()),
+                            AppRoutes.slideUp(const AiExtractScreen()),
                           );
                           _loadJobs();
                         },
@@ -332,10 +333,67 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
 
                     // ── Job List ──
-                    if (jobProvider.isLoading)
+                    if (jobProvider.isLoading && jobProvider.allJobs.isEmpty)
                       const SliverFillRemaining(
                         child: Center(
                           child: CircularProgressIndicator(color: LiquidGlass.accentPrimary),
+                        ),
+                      )
+                    else if (jobProvider.error != null && jobProvider.allJobs.isEmpty)
+                      SliverFillRemaining(
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 80, height: 80,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.red.withValues(alpha: 0.05),
+                                  border: Border.all(color: Colors.red.withValues(alpha: 0.15)),
+                                ),
+                                child: Icon(
+                                  Icons.wifi_off_rounded,
+                                  size: 36,
+                                  color: Colors.red.withValues(alpha: 0.4),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                'Could not load jobs',
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.55),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 40),
+                                child: Text(
+                                  jobProvider.error ?? '',
+                                  style: TextStyle(color: Colors.red.withValues(alpha: 0.5), fontSize: 12),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              GestureDetector(
+                                onTap: _loadJobs,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 11),
+                                  decoration: BoxDecoration(
+                                    gradient: LiquidGlass.primaryGradient,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: LiquidGlass.glowShadow(LiquidGlass.accentPrimary, blur: 14),
+                                  ),
+                                  child: const Text(
+                                    'Retry',
+                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       )
                     else if (jobProvider.jobs.isEmpty)
@@ -352,14 +410,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
                                 ),
                                 child: Icon(
-                                  Icons.work_off_outlined,
+                                  jobProvider.allJobs.isEmpty
+                                      ? Icons.work_off_outlined
+                                      : Icons.search_off_rounded,
                                   size: 36,
                                   color: Colors.white.withValues(alpha: 0.25),
                                 ),
                               ),
                               const SizedBox(height: 20),
                               Text(
-                                'No jobs tracked yet',
+                                jobProvider.allJobs.isEmpty
+                                    ? 'No jobs tracked yet'
+                                    : 'No matching jobs',
                                 style: TextStyle(
                                   color: Colors.white.withValues(alpha: 0.45),
                                   fontSize: 16,
@@ -368,7 +430,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Use the extension or AI Extract to add jobs!',
+                                jobProvider.allJobs.isEmpty
+                                    ? 'Use the extension or AI Extract to add jobs!'
+                                    : 'Try adjusting your search or filters.',
                                 style: TextStyle(
                                   color: Colors.white.withValues(alpha: 0.3),
                                   fontSize: 13,
@@ -379,9 +443,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       )
                     else
-                      LayoutBuilder(
+                      SliverLayoutBuilder(
                         builder: (context, constraints) {
-                          final isWide = constraints.maxWidth > 700;
+                          final isWide = constraints.crossAxisExtent > 700;
                           if (isWide) {
                             return SliverPadding(
                               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -400,7 +464,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       onTap: () async {
                                         await Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (_) => JobDetailScreen(job: job)),
+                                          AppRoutes.fadeSlide(JobDetailScreen(job: job)),
                                         );
                                         _loadJobs();
                                       },
@@ -420,7 +484,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   onTap: () async {
                                     await Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (_) => JobDetailScreen(job: job)),
+                                      AppRoutes.fadeSlide(JobDetailScreen(job: job)),
                                     );
                                     _loadJobs();
                                   },
@@ -472,7 +536,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onTap: () async {
         await Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => const AddJobScreen()),
+          AppRoutes.slideUp(const AddJobScreen()),
         );
         _loadJobs();
       },

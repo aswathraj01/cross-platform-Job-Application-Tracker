@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import '../models/job_model.dart';
 import '../services/job_service.dart';
 import '../services/ai_service.dart';
+import 'auth_provider.dart';
 
 /// Provider for managing job data and state.
 class JobProvider extends ChangeNotifier {
+  AuthProvider? _authProvider;
+
+  /// Inject the AuthProvider so we can silently refresh tokens on 401.
+  void setAuthProvider(AuthProvider auth) {
+    _authProvider = auth;
+  }
+
   List<JobModel> _jobs = [];
   List<JobModel> _filteredJobs = [];
   bool _isLoading = false;
@@ -13,9 +21,9 @@ class JobProvider extends ChangeNotifier {
   String? _statusFilter;
   String? _sourceFilter;
 
-  List<JobModel> get jobs => _filteredJobs.isNotEmpty || _searchQuery.isNotEmpty || _statusFilter != null || _sourceFilter != null
-      ? _filteredJobs
-      : _jobs;
+  bool get _hasActiveFilter => _searchQuery.isNotEmpty || _statusFilter != null || _sourceFilter != null;
+
+  List<JobModel> get jobs => _hasActiveFilter ? _filteredJobs : _jobs;
   List<JobModel> get allJobs => _jobs;
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -55,6 +63,28 @@ class JobProvider extends ChangeNotifier {
         'Offer': offerCount,
       };
 
+  // ==================== TOKEN REFRESH HELPER ====================
+
+  /// Runs [action] with the current token. If a 401 / credential error is
+  /// detected it silently refreshes the token via [_authProvider] and retries
+  /// once. Returns null and sets [_error] if the retry also fails.
+  Future<T?> _withRefresh<T>(String token, Future<T> Function(String t) action) async {
+    try {
+      return await action(token);
+    } catch (e) {
+      final msg = e.toString().toLowerCase();
+      if ((msg.contains('401') || msg.contains('credential') || msg.contains('token')) &&
+          _authProvider != null) {
+        // Try to silently refresh the ID token and retry once
+        final newToken = await _authProvider!.refreshIfNeeded();
+        if (newToken.isNotEmpty) {
+          return await action(newToken);
+        }
+      }
+      rethrow;
+    }
+  }
+
   // ==================== CRUD OPERATIONS ====================
 
   /// Fetch all jobs from the backend.
@@ -64,8 +94,11 @@ class JobProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final service = JobService(token);
-      _jobs = await service.getJobs();
+      final jobs = await _withRefresh(
+        token,
+        (t) => JobService(t).getJobs(),
+      );
+      _jobs = jobs ?? [];
       _applyFilters();
       _isLoading = false;
       notifyListeners();
@@ -83,13 +116,17 @@ class JobProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final service = JobService(token);
-      final newJob = await service.createJob(job);
-      _jobs.insert(0, newJob);
-      _applyFilters();
+      final newJob = await _withRefresh(
+        token,
+        (t) => JobService(t).createJob(job),
+      );
+      if (newJob != null) {
+        _jobs.insert(0, newJob);
+        _applyFilters();
+      }
       _isLoading = false;
       notifyListeners();
-      return true;
+      return newJob != null;
     } catch (e) {
       _error = e.toString().replaceFirst('Exception: ', '');
       _isLoading = false;
@@ -105,16 +142,18 @@ class JobProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final service = JobService(token);
-      final updatedJob = await service.updateJob(jobId, updates);
-      final index = _jobs.indexWhere((j) => j.id == jobId);
-      if (index != -1) {
-        _jobs[index] = updatedJob;
+      final updatedJob = await _withRefresh(
+        token,
+        (t) => JobService(t).updateJob(jobId, updates),
+      );
+      if (updatedJob != null) {
+        final index = _jobs.indexWhere((j) => j.id == jobId);
+        if (index != -1) _jobs[index] = updatedJob;
+        _applyFilters();
       }
-      _applyFilters();
       _isLoading = false;
       notifyListeners();
-      return true;
+      return updatedJob != null;
     } catch (e) {
       _error = e.toString().replaceFirst('Exception: ', '');
       _isLoading = false;
@@ -130,8 +169,10 @@ class JobProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final service = JobService(token);
-      await service.deleteJob(jobId);
+      await _withRefresh(
+        token,
+        (t) async { await JobService(t).deleteJob(jobId); return true; },
+      );
       _jobs.removeWhere((j) => j.id == jobId);
       _applyFilters();
       _isLoading = false;
@@ -154,8 +195,10 @@ class JobProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final service = AiService(token);
-      final result = await service.extractJobData(text: text, url: url);
+      final result = await _withRefresh(
+        token,
+        (t) => AiService(t).extractJobData(text: text, url: url),
+      );
       _isLoading = false;
       notifyListeners();
       return result;

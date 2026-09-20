@@ -1,4 +1,5 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
+from typing import Optional
 
 
 class UserSignup(BaseModel):
@@ -14,11 +15,17 @@ class UserLogin(BaseModel):
 
 
 class UserResponse(BaseModel):
-    """Schema for auth response."""
+    """Schema for auth response — includes refresh_token so the client can silently renew expired ID tokens."""
     uid: str
     email: str
     token: str
+    refresh_token: Optional[str] = ""
     message: str = "Success"
+
+
+class TokenRefreshRequest(BaseModel):
+    """Schema for token refresh request."""
+    refresh_token: str = Field(..., description="Firebase refresh token")
 
 
 class TokenData(BaseModel):
